@@ -1,16 +1,13 @@
 """
-CoordinX - Data Standardization
 Input : data/interim/cleaned_data.csv
 Output: data/processed/standardized_data.csv
         data/processed/standardization_report.txt
-
 Install:
     pip install pandas
 Run:
     python src/preprocessing/standardization.py
     python src/preprocessing/standardization.py --input data/interim/cleaned_data.csv
 """
-
 from pathlib import Path
 import argparse
 import ast
@@ -55,7 +52,6 @@ def parse_mentions(value):
                 return "[]"
     if not isinstance(parsed, (list, tuple)):
         return "[]"
-    # IDs are strings; discard null/empty entries and remove duplicates in order.
     result = []
     seen = set()
     for item in parsed:
@@ -71,20 +67,17 @@ def standardize_dataset(df: pd.DataFrame):
     df = df.copy()
     report = {}
 
-    # Preserve long platform identifiers exactly as strings.
     for col in ID_COLUMNS:
         if col in df.columns:
             df[col] = df[col].astype("string").str.strip()
             df[col] = df[col].replace("", pd.NA)
 
-    # Standardize timestamps to timezone-aware UTC.
     for col in DATE_COLUMNS:
         if col in df.columns:
             parsed = pd.to_datetime(df[col], errors="coerce", utc=True)
             report[f"{col}_invalid_or_missing_after_parse"] = int(parsed.isna().sum())
             df[col] = parsed
 
-    # Standardize counters as nullable integers (missing values remain <NA>).
     for col in NUMERIC_COLUMNS:
         if col in df.columns:
             numeric = pd.to_numeric(df[col], errors="coerce")
@@ -93,12 +86,10 @@ def standardize_dataset(df: pd.DataFrame):
                 report[f"{col}_non_integer_values"] = int(non_integer.sum())
             df[col] = numeric.round().astype("Int64")
 
-    # Standardize boolean flags.
     for col in BOOLEAN_COLUMNS:
         if col in df.columns:
             df[col] = df[col].map(parse_bool).astype("boolean")
 
-    # Keep text content intact; only normalize line endings and outer whitespace.
     if "text" in df.columns:
         df["text"] = (
             df["text"].astype("string")
@@ -107,7 +98,6 @@ def standardize_dataset(df: pd.DataFrame):
             .str.strip()
         )
 
-    # Standardize categorical text fields without changing their meaning.
     for col in ["username", "target_username", "relation_type", "isu"]:
         if col in df.columns:
             df[col] = df[col].astype("string").str.strip()
@@ -133,7 +123,8 @@ def main():
     args = parser.parse_args()
 
     input_path = Path(args.input)
-    output_dir = Path(args.output_dir)
+    file_stem = input_path.stem.replace("_cleaned", "")
+    output_dir = Path("data/processed") / file_stem
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not input_path.exists():
@@ -158,7 +149,6 @@ def main():
     (output_dir / "standardization_report.txt").write_text(
         "\n".join(lines), encoding="utf-8"
     )
-
     print("\n".join(lines))
     print(f"\nOutput tersimpan di: {output_dir.resolve()}")
 

@@ -1,5 +1,4 @@
 """
-CoordinX - Data Cleaning
 Input : data/raw/prayforkalimantan.csv
 Output: data/interim/cleaned_data.csv
         data/interim/duplicate_posts.csv
@@ -23,7 +22,6 @@ REQUIRED_COLUMNS = [
 ]
 
 def read_csv_safely(path: Path) -> pd.DataFrame:
-    # IDs are read as strings to prevent precision loss.
     return pd.read_csv(path, dtype="string", keep_default_na=True)
 
 def clean_dataset(df: pd.DataFrame):
@@ -34,11 +32,9 @@ def clean_dataset(df: pd.DataFrame):
     if missing_columns:
         raise ValueError(f"Kolom wajib tidak ditemukan: {missing_columns}")
 
-    # Normalize only whitespace around identifiers and categorical labels.
     for col in ["post_id", "account_id", "username", "relation_type"]:
         df[col] = df[col].astype("string").str.strip()
 
-    # Treat whitespace-only text as empty; preserve original wording/content.
     df["text"] = df["text"].astype("string")
     empty_text = df["text"].isna() | df["text"].str.strip().eq("")
     missing_identity = (
@@ -49,13 +45,10 @@ def clean_dataset(df: pd.DataFrame):
     rejected = df.loc[rejected_mask].copy()
     valid = df.loc[~rejected_mask].copy()
 
-    # Keep the first occurrence of a post_id; save removed copies for audit.
     duplicate_mask = valid.duplicated(subset=["post_id"], keep="first")
     duplicates = valid.loc[duplicate_mask].copy()
     cleaned = valid.loc[~duplicate_mask].copy()
-
-    # Do NOT remove original/reply/quote/retweet rows based on relation type.
-    # Missing bio and missing target fields on original posts are allowed.
+    
     report = {
         "rows_before": initial_rows,
         "rows_rejected_empty_text_or_missing_identity": len(rejected),
@@ -75,7 +68,8 @@ def main():
     args = parser.parse_args()
 
     input_path = Path(args.input)
-    output_dir = Path(args.output_dir)
+    file_stem = input_path.stem
+    output_dir = Path("data/interim") / file_stem
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not input_path.exists():
@@ -87,14 +81,14 @@ def main():
     raw = read_csv_safely(input_path)
     cleaned, duplicates, rejected, report = clean_dataset(raw)
 
-    cleaned.to_csv(output_dir / "cleaned_data.csv", index=False, encoding="utf-8-sig")
-    duplicates.to_csv(output_dir / "duplicate_posts.csv", index=False, encoding="utf-8-sig")
-    rejected.to_csv(output_dir / "rejected_rows.csv", index=False, encoding="utf-8-sig")
+    cleaned.to_csv(output_dir / f"{file_stem}_cleaned.csv", index=False, encoding="utf-8-sig")
+    duplicates.to_csv(output_dir / f"{file_stem}_duplicates.csv", index=False, encoding="utf-8-sig")
+    rejected.to_csv(output_dir / f"{file_stem}_rejected.csv", index=False, encoding="utf-8-sig")
 
     lines = ["COORDINX - DATA CLEANING REPORT", "=" * 36]
     for key, value in report.items():
         lines.append(f"{key}: {value}")
-    (output_dir / "cleaning_report.txt").write_text("\n".join(lines), encoding="utf-8")
+    (output_dir / f"{file_stem}_report.txt").write_text("\n".join(lines), encoding="utf-8")
 
     print("\n".join(lines))
     print(f"\nOutput tersimpan di: {output_dir.resolve()}")

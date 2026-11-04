@@ -27,7 +27,6 @@ def clean_bert(t):
     t = re.sub(r"(.)\1{2,}", r"\1\1", t)  # bangeeet -> bangeet
     return re.sub(r"\s+", " ", t).strip().lower()
 
-
 df = pd.read_csv("data/all_tweets.csv")
 df = df.dropna(subset=["text", "username", "date"])
 df = df.drop_duplicates(subset=["id", "isu"])
