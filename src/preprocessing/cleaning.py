@@ -63,7 +63,7 @@ def clean_dataset(df: pd.DataFrame):
 
 def main():
     parser = argparse.ArgumentParser(description="Cleaning dataset CoordinX")
-    parser.add_argument("--input", default="data/raw/prayforkalimantan.csv")
+    parser.add_argument("--input", default="data/raw/wowo2.csv")
     parser.add_argument("--output-dir", default="data/interim")
     args = parser.parse_args()
 
