@@ -494,8 +494,8 @@ def render_scrape_mode():
         "Link postingan / keyword / #hashtag / link hashtag"
     )
     issue_name = st.sidebar.text_input(
-        "Nama isu (nama file dataset)",
-        "isu1",
+        "Nama isu",
+        "isu",
     )
     limit = st.sidebar.number_input(
         "Jumlah maksimum postingan",
@@ -674,25 +674,27 @@ def render_analysis(data):
 
 def main():
     st.set_page_config(
-        page_title="CoordinX - X Coordinated Behavior Detector",
+        page_title="Scaping Data X ",
         page_icon="🔎",
         layout="wide",
     )
 
-    st.title("CoordinX")
+    st.title("Scaping X")
     st.caption(
         "AI-powered coordinated behavior analysis for public X posts"
     )
 
-    mode = st.sidebar.radio(
-        "Sumber data",
-        ["Scrape X", "Upload CSV"],
-    )
-
-    if mode == "Scrape X":
-        raw_data = render_scrape_mode()
-    else:
-        raw_data = render_upload_mode()
+    # mode = st.sidebar.radio(
+    #     "Sumber data",
+    #     ["Scrape X", "Upload CSV"],
+    # )
+    
+    # if mode == "Scrape X":
+        #     raw_data = render_scrape_mode()
+        # else:
+        #     raw_data = render_upload_mode()
+    
+    raw_data = render_scrape_mode()
 
     if raw_data is not None and not raw_data.empty:
         render_analysis(raw_data)
