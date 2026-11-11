@@ -3,32 +3,35 @@
 import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  TriangleAlert,
+  ShieldAlert,
   Loader2,
   RefreshCw,
   Search,
   Network,
   Smile,
   Users,
+  Link as LinkIcon,
+  Sparkles,
 } from "lucide-react";
 import HeroNetworkPreview from "./HeroNetworkPreview";
 import { BuzzerAccount } from "@/types/buzzer";
 
-type InputTab = "scrape" | "manual";
 type ResultTab = "visualisasi" | "frasa" | "sentimen" | "kluster";
 
 const SAMPLE_PRESETS = [
-  { label: "#PrayForKalimantan", query: "#PrayForKalimantan" },
-  { label: "Pilpres wowo2", query: "Pilpres wowo2" },
-  { label: "RoySuryo", query: "#RoySuryo" },
+  {
+    label: "Isu Kalimantan",
+    url: "https://x.com/WempiF90099/status/18293019284",
+  },
+  {
+    label: "Isu Pilpres wowo2",
+    url: "https://x.com/cyber_indojaya99/status/18392019482",
+  },
+  {
+    label: "Isu RoySuryo",
+    url: "https://x.com/buzzer_senter07/status/18482019381",
+  },
 ];
-
-const DEFAULT_MANUAL_TEXT = `Ayo kawal terus narasi ini sampai tuntas! Jangan sampai pihak lain membelokkan opini.
-Ayo kawal terus narasi ini sampai tuntas! Jangan sampai pihak lain membelokkan opini.
-Kawal terus narasi ini sampai tuntas! Sebarkan ke semua grup sekarang juga!
-Ini sudah jelas bukti kegagalan kebijakan. Jangan diam saja!
-Ini sudah jelas bukti kegagalan kebijakan. Jangan diam saja!
-Simak faktanya dan viralkan sebelum ditutup pihak tertentu.`;
 
 interface AnalysisResultData {
   query: string;
@@ -42,11 +45,7 @@ interface AnalysisResultData {
 }
 
 export default function Hero() {
-  const [activeTab, setActiveTab] = useState<InputTab>("scrape");
-  const [query, setQuery] = useState("");
-  const [manualText, setManualText] = useState("");
-  const [depth, setDepth] = useState<number>(200);
-  const [mode, setMode] = useState<"fast" | "deep">("deep");
+  const [urlInput, setUrlInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
@@ -55,14 +54,8 @@ export default function Hero() {
   const [activeResultTab, setActiveResultTab] =
     useState<ResultTab>("visualisasi");
 
-  const linesCount = manualText
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean).length;
-
   const handleClear = () => {
-    setQuery("");
-    setManualText("");
+    setUrlInput("");
     setErrorMsg(null);
     setResult(null);
   };
@@ -71,42 +64,33 @@ export default function Hero() {
     e.preventDefault();
     setErrorMsg(null);
 
-    const targetQuery =
-      activeTab === "manual"
-        ? linesCount > 0
-          ? `Input Manual (${linesCount} komentar)`
-          : ""
-        : query.trim();
+    const targetUrl = urlInput.trim();
 
-    if (!targetQuery) {
-      setErrorMsg(
-        activeTab === "manual"
-          ? "Silakan masukkan teks komentar/cuitan terlebih dahulu."
-          : "Silakan masukkan URL postingan atau #Tagar."
-      );
+    if (!targetUrl) {
+      setErrorMsg("Silakan masukkan tautan (URL) postingan X (Twitter) terlebih dahulu.");
       return;
     }
 
     setLoading(true);
     try {
+      // Fixed depth to 500 samples & mode to deep
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          query: targetQuery,
-          depth,
-          mode,
-          rawLines: activeTab === "manual" ? manualText.split("\n") : undefined,
+          query: targetUrl,
+          depth: 500,
+          mode: "deep",
         }),
       });
 
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error || "Gagal menjalankan analisis");
+        setErrorMsg(data.error || "Gagal menjalankan analisis tautan");
       } else {
         const accs: BuzzerAccount[] = data.newAccounts || [];
         setResult({
-          query: targetQuery,
+          query: targetUrl,
           score: 87,
           riskLevel: "high",
           accounts: accs,
@@ -119,7 +103,7 @@ export default function Hero() {
               similarity: 94,
             },
             {
-              phrase: "Jangan biarkan pihak lain membelokkan opini",
+              phrase: "Jangan biarkan pihak lain membelokkan opini publik",
               count: 14,
               similarity: 89,
             },
@@ -129,7 +113,7 @@ export default function Hero() {
               similarity: 85,
             },
             {
-              phrase: "Sebarkan ke semua grup sekarang juga",
+              phrase: "Sebarkan ke semua grup sekarang juga!",
               count: 9,
               similarity: 82,
             },
@@ -145,155 +129,98 @@ export default function Hero() {
         }, 150);
       }
     } catch {
-      setErrorMsg("Terjadi kendala koneksi saat menganalisis");
+      setErrorMsg("Terjadi kendala koneksi saat menghubungi server analisis.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section id="analisis" className="py-12 md:py-18 px-4 md:px-6">
+    <section id="analisis" className="py-12 md:py-20 px-4 md:px-6">
       <div className="mx-auto max-w-screen-lg">
         {/* Centered Top Badge & Header */}
-        <div className="flex flex-col items-center text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center justify-center rounded-xl bg-[var(--primary)]/10 p-3 text-[var(--primary)]">
-            <TriangleAlert size={30} />
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center text-center max-w-2xl mx-auto space-y-4"
+        >
+          {/* Logo badge with ShieldAlert */}
+          <div className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 p-3 text-white shadow-lg shadow-blue-500/25">
+            <ShieldAlert size={32} />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
-            Analisis Pola Komentar Buzzer
-          </h1>
+          <div className="space-y-2">
+            <span className="eyebrow inline-block">
+              Sistem Intelijen Media Sosial
+            </span>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
+              NEXANTARA
+            </h1>
+          </div>
 
           <p className="text-sm md:text-base text-[var(--muted-foreground)] leading-relaxed">
-            Menganalisis pola linguistik dan struktur komentar untuk mendeteksi
-            aktivitas buzzer terkoordinasi di media sosial.
+            Mendeteksi koordinasi buzzer, copypasta semantik, dan manipulasi opini publik di media sosial X (Twitter) melalui analisis tautan postingan.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Main Input Card */}
-        <div className="mt-10 mx-auto max-w-3xl rounded-2xl border border-[var(--border)] bg-white p-5 md:p-7 shadow-xs">
-          <div className="mb-5">
-            <h2 className="text-xl font-bold text-[var(--foreground)]">
-              Analisis Komentar
-            </h2>
-            <p className="text-xs md:text-sm text-[var(--muted-foreground)] mt-0.5">
-              Pilih metode input untuk menganalisis pola buzzer
-            </p>
+        {/* Main Input Card — Link Only */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-10 mx-auto max-w-3xl rounded-2xl border border-[var(--border)] bg-white dark:bg-[var(--card)] p-5 md:p-8 shadow-sm transition-colors duration-200"
+        >
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-[var(--border)] pb-4">
+            <div>
+              <h2 className="text-xl font-bold text-[var(--foreground)] flex items-center gap-2">
+                <LinkIcon size={18} className="text-[var(--primary)]" />
+                Analisis Tautan Postingan
+              </h2>
+              <p className="text-xs md:text-sm text-[var(--muted-foreground)] mt-0.5">
+                Sistem memeriksa reply, mention, dan narasi di sekitar URL target
+              </p>
+            </div>
+
+            <div className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full bg-[var(--card-subtle)] border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--muted-foreground)]">
+              <Sparkles size={12} className="text-[var(--primary)]" />
+              Sampel: 500 Cuitan
+            </div>
           </div>
 
-          {/* Tab Selector */}
-          <div className="flex rounded-lg bg-[var(--card)] p-1 border border-[var(--border)] mb-5">
-            <button
-              type="button"
-              onClick={() => setActiveTab("scrape")}
-              className={`flex-1 rounded-md py-2 text-xs md:text-sm font-semibold transition-all cursor-pointer ${
-                activeTab === "scrape"
-                  ? "bg-white text-[var(--foreground)] shadow-xs"
-                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              }`}
-            >
-              Scrape X / Twitter
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("manual")}
-              className={`flex-1 rounded-md py-2 text-xs md:text-sm font-semibold transition-all cursor-pointer ${
-                activeTab === "manual"
-                  ? "bg-white text-[var(--foreground)] shadow-xs"
-                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              }`}
-            >
-              Input Manual
-            </button>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleAnalyze} className="space-y-4">
-            {activeTab === "scrape" ? (
-              <div className="space-y-2">
-                <label className="text-xs font-semibold text-[var(--foreground)]">
-                  Masukkan URL Postingan atau Tagar
-                </label>
+          {/* Form: Single URL Link Input */}
+          <form onSubmit={handleAnalyze} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-[var(--foreground)] flex items-center gap-1.5">
+                URL Postingan X (Twitter)
+              </label>
+              <div className="relative">
                 <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="https://x.com/... atau #PrayForKalimantan"
-                  className="w-full rounded-lg border border-[var(--border)] bg-white px-4 py-2.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                  type="url"
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  placeholder="https://x.com/username/status/18892019482..."
+                  className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all font-mono"
                 />
-
-                {/* Preset Chips */}
-                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span className="text-[11px] text-[var(--muted-foreground)] mr-1">
-                    Contoh cepat:
-                  </span>
-                  {SAMPLE_PRESETS.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => setQuery(preset.query)}
-                      className="rounded-md border border-[var(--border)] bg-[var(--background)] px-2.5 py-1 text-xs text-[var(--foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors cursor-pointer"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-[var(--foreground)]">
-                    Masukkan Komentar untuk Analisis Pola
-                  </label>
+
+              {/* Preset Quick Links */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
+                <span className="text-[11px] font-medium text-[var(--muted-foreground)] mr-1">
+                  Coba tautan contoh:
+                </span>
+                {SAMPLE_PRESETS.map((preset) => (
                   <button
+                    key={preset.label}
                     type="button"
-                    onClick={() => setManualText(DEFAULT_MANUAL_TEXT)}
-                    className="text-xs text-[var(--primary)] hover:underline font-medium cursor-pointer"
+                    onClick={() => setUrlInput(preset.url)}
+                    className="rounded-lg border border-[var(--border)] bg-[var(--card-subtle)] px-2.5 py-1 text-xs text-[var(--foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all cursor-pointer font-medium"
                   >
-                    Muat Contoh Teks
+                    {preset.label}
                   </button>
-                </div>
-                <textarea
-                  value={manualText}
-                  onChange={(e) => setManualText(e.target.value)}
-                  rows={5}
-                  placeholder={`Tempelkan komentar/cuitan di sini, satu baris untuk setiap komentar...`}
-                  className="w-full rounded-lg border border-[var(--border)] bg-white p-3.5 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] font-sans"
-                />
-                <p className="text-[11px] text-[var(--muted-foreground)]">
-                  {linesCount} komentar terdeteksi (satu per baris)
-                </p>
-              </div>
-            )}
-
-            {/* Optional Engine & Depth Controls */}
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <div>
-                <label className="block text-[11px] font-medium text-[var(--muted-foreground)] mb-1">
-                  Jumlah Sampel
-                </label>
-                <select
-                  value={depth}
-                  onChange={(e) => setDepth(Number(e.target.value))}
-                  className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
-                >
-                  <option value={100}>100 Cuitan</option>
-                  <option value={200}>200 Cuitan</option>
-                  <option value={500}>500 Cuitan</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-[11px] font-medium text-[var(--muted-foreground)] mb-1">
-                  Mesin Analisis
-                </label>
-                <select
-                  value={mode}
-                  onChange={(e) => setMode(e.target.value as "fast" | "deep")}
-                  className="w-full rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] cursor-pointer"
-                >
-                  <option value="deep">IndoBERTweet + GraphSAGE</option>
-                  <option value="fast">Heuristik Cepat</option>
-                </select>
+                ))}
               </div>
             </div>
 
@@ -308,52 +235,56 @@ export default function Hero() {
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--primary)] py-2.5 px-4 text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer disabled:opacity-60"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] py-3 px-5 text-sm font-semibold text-white hover:opacity-90 transition-all cursor-pointer disabled:opacity-60 shadow-md shadow-blue-500/20"
               >
                 {loading ? (
                   <>
                     <Loader2 size={16} className="animate-spin" />
-                    Sedang Menganalisis...
+                    Sedang Menganalisis 500 Cuitan...
                   </>
                 ) : (
-                  "Analisis Pola Komentar"
+                  <>
+                    <Search size={16} />
+                    Analisis URL Postingan
+                  </>
                 )}
               </button>
 
               <button
                 type="button"
                 onClick={handleClear}
-                className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-[var(--border)] bg-white py-2.5 px-5 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--card)] transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--card)] py-3 px-5 text-sm font-semibold text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
               >
                 <RefreshCw size={14} className="text-[var(--muted-foreground)]" />
                 Bersihkan
               </button>
             </div>
           </form>
-        </div>
+        </motion.div>
 
         {/* Interactive Results Section */}
         <AnimatePresence>
           {result && (
             <motion.div
               id="hasil-analisis"
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 24 }}
-              className="mt-12 mx-auto max-w-3xl rounded-2xl border border-[var(--border)] bg-white p-6 md:p-8 shadow-sm space-y-6"
+              exit={{ opacity: 0, y: 30 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-12 mx-auto max-w-3xl rounded-2xl border border-[var(--border)] bg-white dark:bg-[var(--card)] p-6 md:p-8 shadow-sm space-y-6 transition-colors duration-200"
             >
               {/* Header Hasil */}
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-[var(--border)] pb-5">
-                <div>
+                <div className="min-w-0 pr-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-[var(--primary)]">
-                    Hasil Analisis Pola
+                    Hasil Analisis NEXANTARA
                   </span>
-                  <h3 className="text-xl font-extrabold text-[var(--foreground)] mt-0.5">
+                  <h3 className="text-base sm:text-lg font-bold text-[var(--foreground)] mt-0.5 truncate font-mono">
                     {result.query}
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 shrink-0">
                   <div className="text-right">
                     <span className="block text-[10px] uppercase font-semibold text-[var(--muted-foreground)]">
                       Skor Risiko Buzzer
@@ -362,13 +293,13 @@ export default function Hero() {
                       {result.score}%
                     </span>
                   </div>
-                  <span className="rounded-full bg-[var(--accent-danger)]/10 px-3 py-1 text-xs font-bold text-[var(--accent-danger)] border border-[var(--accent-danger)]/30">
+                  <span className="rounded-full bg-[var(--accent-danger)]/15 px-3 py-1 text-xs font-bold text-[var(--accent-danger)] border border-[var(--accent-danger)]/30">
                     Aktivitas Terkoordinasi Tinggi
                   </span>
                 </div>
               </div>
 
-              {/* 4 Tabs Hasil seperti youtube-buzzer-detector */}
+              {/* 4 Tabs Hasil */}
               <div className="flex flex-wrap border-b border-[var(--border)] gap-1">
                 {[
                   { id: "visualisasi", label: "Visualisasi Pola", Icon: Network },
@@ -383,7 +314,7 @@ export default function Hero() {
                       key={t.id}
                       type="button"
                       onClick={() => setActiveResultTab(t.id as ResultTab)}
-                      className={`inline-flex items-center gap-2 px-3.5 py-2 text-xs md:text-sm font-semibold border-b-2 transition-all cursor-pointer ${
+                      className={`inline-flex items-center gap-2 px-3.5 py-2.5 text-xs md:text-sm font-semibold border-b-2 transition-all cursor-pointer ${
                         active
                           ? "border-[var(--primary)] text-[var(--primary)]"
                           : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
@@ -400,35 +331,35 @@ export default function Hero() {
               {activeResultTab === "visualisasi" && (
                 <div className="space-y-5 pt-2">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-4 text-center">
+                    <div className="rounded-xl border border-[var(--border)] bg-[var(--card-subtle)] p-4 text-center">
                       <span className="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase">
                         Kemiripan Teks
                       </span>
-                      <p className="text-xl tabular-score text-[var(--foreground)] mt-1">
+                      <p className="text-2xl tabular-score text-[var(--foreground)] mt-1">
                         {Math.round(result.duplicateRatio * 100)}%
                       </p>
                     </div>
-                    <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-4 text-center">
+                    <div className="rounded-xl border border-[var(--border)] bg-[var(--card-subtle)] p-4 text-center">
                       <span className="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase">
                         Sinkronisasi Burst
                       </span>
-                      <p className="text-xl tabular-score text-[var(--accent-danger)] mt-1">
+                      <p className="text-2xl tabular-score text-[var(--accent-danger)] mt-1">
                         {Math.round(result.burstRatio * 100)}%
                       </p>
                     </div>
-                    <div className="col-span-2 sm:col-span-1 rounded-xl border border-[var(--border)] bg-[var(--background)] p-4 text-center">
+                    <div className="col-span-2 sm:col-span-1 rounded-xl border border-[var(--border)] bg-[var(--card-subtle)] p-4 text-center">
                       <span className="text-[11px] font-semibold text-[var(--muted-foreground)] uppercase">
-                        Akun Terlibat
+                        Sampel Terpindai
                       </span>
-                      <p className="text-xl tabular-score text-[var(--primary)] mt-1">
-                        {result.accounts.length > 0 ? result.accounts.length : 8} Akun
+                      <p className="text-2xl tabular-score text-[var(--primary)] mt-1">
+                        500 Cuitan
                       </p>
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-[var(--border)] bg-[var(--background)] p-4">
+                  <div className="rounded-xl border border-[var(--border)] bg-[var(--card-subtle)] p-4">
                     <p className="text-xs font-semibold text-[var(--foreground)] mb-2">
-                      Graf Hubungan Antar Node Cuitan & Akun
+                      Graf Hubungan Antar Node Cuitan & Akun dalam Jaringan
                     </p>
                     <div className="h-[280px]">
                       <HeroNetworkPreview />
@@ -441,16 +372,16 @@ export default function Hero() {
               {activeResultTab === "frasa" && (
                 <div className="space-y-3 pt-2">
                   <p className="text-xs text-[var(--muted-foreground)]">
-                    Frasa yang sering diulang dengan kemiripan semantik tinggi (indikasi copypasta):
+                    Frasa yang sering diulang dengan kemiripan semantik tinggi (indikasi copypasta terkoordinasi):
                   </p>
                   <div className="space-y-2">
                     {result.repeatedPhrases.map((p, i) => (
                       <div
                         key={i}
-                        className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--background)] p-3 text-sm"
+                        className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--card-subtle)] p-3.5 text-sm"
                       >
                         <div className="min-w-0 pr-3">
-                          <span className="font-medium text-[var(--foreground)] block truncate">
+                          <span className="font-semibold text-[var(--foreground)] block truncate">
                             &ldquo;{p.phrase}&rdquo;
                           </span>
                           <span className="text-xs text-[var(--muted-foreground)]">
@@ -470,7 +401,7 @@ export default function Hero() {
               {activeResultTab === "sentimen" && (
                 <div className="space-y-5 pt-2">
                   <p className="text-xs text-[var(--muted-foreground)]">
-                    Distribusi sentimen pada kumpulan komentar. Anomali terdeteksi jika polarisasi negatif/positif seragam ekstrem:
+                    Distribusi sentimen pada 500 komentar cuitan. Anomali terdeteksi jika polarisasi negatif/positif seragam ekstrem:
                   </p>
                   <div className="space-y-3">
                     <div>
@@ -484,7 +415,7 @@ export default function Hero() {
                       </div>
                       <div className="h-3 w-full rounded-full bg-[var(--border)] overflow-hidden">
                         <div
-                          className="h-full bg-[var(--accent-danger)] rounded-full"
+                          className="h-full bg-[var(--accent-danger)] rounded-full transition-all duration-500"
                           style={{
                             width: `${result.sentimentBreakdown.negative}%`,
                           }}
@@ -500,7 +431,7 @@ export default function Hero() {
                       </div>
                       <div className="h-3 w-full rounded-full bg-[var(--border)] overflow-hidden">
                         <div
-                          className="h-full bg-[var(--foreground)]/40 rounded-full"
+                          className="h-full bg-[var(--foreground)]/40 rounded-full transition-all duration-500"
                           style={{
                             width: `${result.sentimentBreakdown.neutral}%`,
                           }}
@@ -516,7 +447,7 @@ export default function Hero() {
                       </div>
                       <div className="h-3 w-full rounded-full bg-[var(--border)] overflow-hidden">
                         <div
-                          className="h-full bg-[var(--accent-go)] rounded-full"
+                          className="h-full bg-[var(--accent-go)] rounded-full transition-all duration-500"
                           style={{
                             width: `${result.sentimentBreakdown.positive}%`,
                           }}
@@ -525,7 +456,7 @@ export default function Hero() {
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900 leading-relaxed">
+                  <div className="rounded-xl border border-amber-200 dark:border-amber-900/40 bg-amber-50 dark:bg-amber-950/20 p-4 text-xs text-amber-900 dark:text-amber-200 leading-relaxed">
                     <strong>Catatan Anomali:</strong> 82% komentar memiliki sentimen negatif seragam dengan struktur kalimat serupa terhadap topik target dalam jendela waktu 15 menit.
                   </div>
                 </div>
@@ -535,44 +466,41 @@ export default function Hero() {
               {activeResultTab === "kluster" && (
                 <div className="space-y-3 pt-2">
                   <p className="text-xs text-[var(--muted-foreground)]">
-                    Akun-akun yang teridentifikasi beroperasi dalam kluster serentak:
+                    Akun-akun terdeteksi yang beroperasi dalam kluster serentak:
                   </p>
                   <div className="space-y-2">
-                    {(result.accounts.length > 0
-                      ? result.accounts
-                      : [
-                          {
-                            id: "1",
-                            username: "WempiF90099",
-                            name: "Wempi F.",
-                            buzzerScore: 92,
-                            followerRatio: 20,
-                            postRatePerHour: 18.5,
-                          },
-                          {
-                            id: "2",
-                            username: "cyber_indojaya99",
-                            name: "Cyber Indojaya",
-                            buzzerScore: 89,
-                            followerRatio: 37,
-                            postRatePerHour: 22,
-                          },
-                          {
-                            id: "3",
-                            username: "buzzer_senter07",
-                            name: "Buzzer Senter",
-                            buzzerScore: 84,
-                            followerRatio: 17.3,
-                            postRatePerHour: 14.8,
-                          },
-                        ]
-                    ).map((acc, idx) => (
+                    {[
+                      {
+                        username: "WempiF90099",
+                        name: "Wempi F.",
+                        buzzerScore: 92,
+                        followerRatio: 20,
+                      },
+                      {
+                        username: "cyber_indojaya99",
+                        name: "Cyber Indojaya",
+                        buzzerScore: 89,
+                        followerRatio: 37,
+                      },
+                      {
+                        username: "buzzer_senter07",
+                        name: "Buzzer Senter",
+                        buzzerScore: 84,
+                        followerRatio: 17.3,
+                      },
+                      {
+                        username: "Uniliswara0",
+                        name: "Uniliswara",
+                        buzzerScore: 68,
+                        followerRatio: 0.12,
+                      },
+                    ].map((acc, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--background)] p-3"
+                        className="flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--card-subtle)] p-3.5"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--primary)] text-white text-xs font-bold">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white text-xs font-bold">
                             {acc.username.slice(0, 2).toUpperCase()}
                           </div>
                           <div>
@@ -580,13 +508,13 @@ export default function Hero() {
                               @{acc.username}
                             </span>
                             <span className="text-xs text-[var(--muted-foreground)]">
-                              {acc.name} · Flw ratio: {acc.followerRatio}x
+                              {acc.name} · Rasio Flw: {acc.followerRatio}x
                             </span>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2">
-                          <span className="rounded-full bg-[var(--accent-danger)]/10 text-[var(--accent-danger)] border border-[var(--accent-danger)]/30 px-2 py-0.5 text-xs font-bold">
+                          <span className="rounded-full bg-[var(--accent-danger)]/15 text-[var(--accent-danger)] border border-[var(--accent-danger)]/30 px-2.5 py-0.5 text-xs font-bold">
                             Skor {acc.buzzerScore}
                           </span>
                         </div>

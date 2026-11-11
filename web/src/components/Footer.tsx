@@ -1,5 +1,5 @@
 import React from "react";
-import { TriangleAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 
 const FOOTER_LINKS = [
   { label: "Analisis", href: "#analisis" },
@@ -14,16 +14,18 @@ const FOOTER_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--border)] bg-white py-8 text-center text-xs text-[var(--muted-foreground)]">
-      <div className="mx-auto max-w-screen-lg px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-2 font-bold text-sm text-[var(--foreground)]">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[var(--primary)]/10 text-[var(--primary)]">
-            <TriangleAlert size={14} />
+    <footer className="border-t border-[var(--border)] bg-white dark:bg-[var(--card)] py-10 text-center text-xs text-[var(--muted-foreground)] transition-colors duration-200">
+      <div className="mx-auto max-w-screen-lg px-4 flex flex-col sm:flex-row items-center justify-between gap-5">
+        {/* Brand */}
+        <div className="flex items-center gap-2.5 font-extrabold text-base text-[var(--foreground)] tracking-tight">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm">
+            <ShieldAlert size={16} />
           </div>
-          <span>Buzzer Detector</span>
+          <span>NEXANTARA</span>
         </div>
 
-        <ul className="flex flex-wrap items-center justify-center gap-5 list-none m-0 p-0">
+        {/* Links */}
+        <ul className="flex flex-wrap items-center justify-center gap-6 list-none m-0 p-0">
           {FOOTER_LINKS.map((link) => (
             <li key={link.label}>
               <a
@@ -34,7 +36,7 @@ export default function Footer() {
                     ? "noopener noreferrer"
                     : undefined
                 }
-                className="hover:text-[var(--foreground)] transition-colors"
+                className="hover:text-[var(--primary)] dark:hover:text-white transition-colors"
               >
                 {link.label}
               </a>
@@ -42,8 +44,9 @@ export default function Footer() {
           ))}
         </ul>
 
+        {/* Copyright */}
         <p className="m-0">
-          © 2026 Buzzer Detector. Dibuat untuk analisis media sosial.
+          © 2026 NEXANTARA. Platform Deteksi Perilaku Terkoordinasi.
         </p>
       </div>
     </footer>

@@ -8,10 +8,25 @@
   --primary-foreground: hsl(0, 0%, 100%);
   --muted-foreground: hsl(220, 8%, 46%);
   --border: hsl(212, 18%, 89%);
-  --card: hsl(210, 26%, 95%);
+  --card: hsl(0, 0%, 100%);
+  --card-subtle: hsl(210, 26%, 95%);
   --accent-go: hsl(150, 58%, 40%);
   --accent-warn: hsl(32, 90%, 52%);
   --accent-danger: hsl(350, 84%, 54%);
+}
+
+.dark {
+  --background: hsl(224, 45%, 6%);
+  --foreground: hsl(210, 25%, 97%);
+  --primary: hsl(217, 91%, 60%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --muted-foreground: hsl(215, 18%, 65%);
+  --border: hsl(220, 28%, 18%);
+  --card: hsl(224, 40%, 10%);
+  --card-subtle: hsl(224, 35%, 14%);
+  --accent-go: hsl(150, 68%, 46%);
+  --accent-warn: hsl(35, 92%, 55%);
+  --accent-danger: hsl(350, 89%, 60%);
 }
 
 body {
@@ -20,6 +35,7 @@ body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 400;
   line-height: 1.7;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -27,21 +43,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(36px, 4.6vw, 64px);
+  font-size: clamp(32px, 4.2vw, 56px);
   font-weight: 800;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 h2 {
-  font-size: clamp(30px, 3vw, 42px);
+  font-size: clamp(26px, 2.8vw, 38px);
   font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 h3 {
-  font-size: clamp(18px, 2vw, 21px);
+  font-size: clamp(17px, 1.8vw, 20px);
   font-weight: 700;
 }
 
