@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-11-10T07:32:08.698275+00:00",
+  "model_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/models/phase6_fusion_proxy_combined_canonical.pkl",
+  "model_version": "phase6_fusion_proxy_combined_canonical.pkl:2026-11-10T05:51:22.939445+00:00",
+  "schema_version": "canonical-v1",
+  "rows": 1803,
+  "batches": {
+    "batch2": 1007,
+    "batch3": 796
+  },
+  "predicted_buzzer": 440,
+  "review_required": 291,
+  "priority_review": 328,
+  "mean_coordination_score": 0.33384306133809866,
+  "artifacts": {
+    "combined_predictions": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/predictions/phase7_combined_predictions.csv",
+    "predictions_report": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_predictions.csv",
+    "priority_review": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_priority_review.csv",
+    "score_distribution": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_coordination_score_distribution.png"
+  }
+}

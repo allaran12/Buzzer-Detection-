@@ -1,0 +1,8 @@
+COORDINX - DATA STANDARDIZATION REPORT
+==========================================
+date_invalid_or_missing_after_parse: 0
+created_invalid_or_missing_after_parse: 0
+rows: 1514
+columns: 27
+relation_type_counts: {'original': 796, 'reply': 499, 'quote': 219}
+retweet_rows: 0

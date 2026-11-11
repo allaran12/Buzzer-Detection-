@@ -1,0 +1,111 @@
+{
+  "schema_version": "canonical-v1",
+  "batch": "batch2",
+  "issue_id": "wowo2",
+  "post": {
+    "source_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/processed/wowo2/standardized_data.csv",
+    "source_rows": 1514,
+    "posts": 1514,
+    "unique_posts": 1514,
+    "accounts": 1007,
+    "invalid_dates": 0,
+    "duplicate_posts": 0,
+    "relation_counts": {
+      "original": 796,
+      "quote": 219,
+      "reply": 499
+    },
+    "interaction_rows": 718,
+    "target_missing_before_username_resolution": 0,
+    "target_unresolved_after_username_resolution": 0,
+    "invalid_target_ids_before_resolution": 0
+  },
+  "graph": {
+    "interaction_rows": 718,
+    "valid_edge_events": 651,
+    "unresolved_edge_events": 67,
+    "self_loop_events_removed": 67,
+    "unique_directed_edges": 642,
+    "graph_nodes": 1352,
+    "graph_edges": 642
+  },
+  "labels": {
+    "source_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/labels/batch2_labeled_combined.csv",
+    "source_rows": 50,
+    "label_counts": {
+      "0": 27,
+      "1": 23
+    },
+    "unmatched_labels": 0
+  },
+  "account_features": {
+    "rows": 1007,
+    "unique_account_ids": 1007,
+    "missing_account_ids": 0,
+    "columns": [
+      "account_id",
+      "username",
+      "dataset_id",
+      "issue_id",
+      "n_posts",
+      "avg_tags",
+      "avg_body_len",
+      "url_rate",
+      "avg_words",
+      "n_replies",
+      "n_quotes",
+      "n_originals",
+      "first_post",
+      "last_post",
+      "followers",
+      "following",
+      "follower_ratio",
+      "active_hours",
+      "post_rate",
+      "sequence_len",
+      "mean_interval_hours",
+      "std_interval_hours",
+      "min_interval_hours",
+      "max_interval_hours",
+      "burst_ratio_1h",
+      "active_span_hours_observed",
+      "active_days_observed",
+      "hour_entropy",
+      "text_blob",
+      "in_degree",
+      "out_degree",
+      "total_degree",
+      "pagerank",
+      "component_size",
+      "graph_in_degree",
+      "graph_out_degree",
+      "graph_unique_targets",
+      "graph_unique_sources",
+      "graph_pagerank",
+      "graph_component_size",
+      "score_post_rate",
+      "score_high_tags",
+      "score_body_length",
+      "score_out_degree",
+      "score_low_follower_ratio",
+      "buzzer_score"
+    ]
+  },
+  "label_preservation": {
+    "source_counts": {
+      "0": 27,
+      "1": 23
+    },
+    "canonical_counts": {
+      "0": 27,
+      "1": 23
+    }
+  },
+  "artifacts": {
+    "posts": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/features/batch2_posts_with_features.csv",
+    "accounts": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/features/batch2_account_features.csv",
+    "accounts_with_scores": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/features/batch2_account_features_with_scores.csv",
+    "interactions": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/features/batch2_interactions.csv",
+    "labels": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/labels/batch2_labeled_canonical.csv"
+  }
+}

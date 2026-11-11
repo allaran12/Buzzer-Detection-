@@ -1,0 +1,31 @@
+account_id,username,n_posts,post_rate,avg_tags,avg_body_len,out_degree,follower_ratio,buzzer_score,label,evidence,review_status,candidate_type
+1608041882856349698,Berita_A1,1,10.0,1.0,278.0,1,0.978,0.9337,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1617455387220787203,zwucce,1,10.0,1.0,138.0,0,1.011,0.7039,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1629530059265703938,Srik4ndiMuslim2,1,10.0,2.0,202.0,1,2.269,0.8785,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1766624984766853120,AuraKasih0872,1,10.0,1.0,315.0,1,0.98,0.9361,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1766629692948590592,CSukhova61073,1,10.0,1.0,269.0,1,0.989,0.9281,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1766640890226044928,dfn1432034,1,10.0,1.0,272.0,1,1.0,0.9299,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1766659361970225152,bry213903767212,1,10.0,1.0,263.0,1,1.0,0.9244,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1767693771767173120,CableQuantum,1,10.0,1.0,227.0,1,0.979,0.9025,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1767695623950864384,dewa76812781826,1,10.0,1.0,301.0,1,0.979,0.9361,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1767698437993287680,cableact,1,10.0,1.0,255.0,1,0.976,0.9196,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1767703136062623744,troothar,1,10.0,1.0,251.0,1,0.987,0.9171,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1767720414434959360,syedbry64190,1,10.0,1.0,277.0,1,0.978,0.9331,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1767990587079405568,Joker514726,1,10.0,1.0,273.0,1,0.974,0.9307,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1768203864808079360,adryanqyg2c,1,10.0,1.0,271.0,1,0.988,0.9293,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1768226689761574913,dennyfebia50888,1,10.0,1.0,252.0,1,0.978,0.9178,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1771681447688249344,godeedk45297,1,10.0,1.0,269.0,1,0.989,0.9281,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1805815904909115395,radarhots,1,10.0,1.0,273.0,1,0.976,0.9307,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+181560855,wahyu_panda,2,17.48,0.0,96.0,2,0.773,0.7374,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1822465751992963073,hotradars,1,10.0,1.0,240.0,1,0.977,0.9104,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1825846769101754368,sayurku44194,2,20.0,0.0,64.0,2,0.663,0.7185,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1863484917952516096,parjo4423939442,4,16.36,2.0,151.0,4,0.95,1.0,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1884178679766605829,Charism_Web3,1,10.0,2.0,112.0,0,0.48,0.6916,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+1884211186918666240,zetao1234,1,10.0,1.0,242.0,1,1.0,0.9115,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+1947889563013419009,Jogja434788,2,20.0,3.0,92.5,0,0.393,0.6802,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+2078659335471996928,infonewsgo,1,10.0,1.0,255.0,1,0.96,0.9197,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+2428845116,IndonesiaGelapp,1,10.0,1.0,111.0,1,0.87,0.8322,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+3527049614,didithardworker,2,16.33,0.0,12.0,2,0.233,0.6896,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+49935892,SheIsAStarseed,1,10.0,2.0,131.0,1,0.532,0.8467,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious
+68152093,Small12Forward,1,10.0,1.0,47.0,0,0.814,0.6495,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Top30_Suspicious
+780554097388687360,asboediono_id,2,10.43,1.0,274.5,1,4.448,0.9081,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Top30_Suspicious

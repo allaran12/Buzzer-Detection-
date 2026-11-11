@@ -1,0 +1,601 @@
+account_group,dataset_id,username,label,predicted_label,predicted_probability,model
+batch2::1089589044609044480,batch2,posrondart9,1,1,1.0,Majority baseline
+batch2::1048161416673341441,batch2,asaprosul,1,1,1.0,Majority baseline
+batch2::2004132912875307008,batch2,FITRI688212,1,1,1.0,Majority baseline
+batch2::1878777516296679424,batch2,mzk716524,1,1,1.0,Majority baseline
+batch2::1448884002186694658,batch2,bukan_fufufafa_,1,1,1.0,Majority baseline
+batch2::2051482579946336257,batch2,Up_informasi,1,1,1.0,Majority baseline
+batch2::1809710719644102656,batch2,Addaily11,1,1,1.0,Majority baseline
+batch2::1938137369255022592,batch2,jurnalkencan,0,1,1.0,Majority baseline
+batch2::797761417894051840,batch2,MarahIchsan,1,1,1.0,Majority baseline
+batch2::743782467262251008,batch2,dzikdzikdzik,0,1,1.0,Majority baseline
+batch2::2033062906628292608,batch2,EzeeDMeme,0,1,1.0,Majority baseline
+batch2::1868400477416951808,batch2,tukangberi,1,1,1.0,Majority baseline
+batch2::1619497882842959872,batch2,hanhan2901,1,1,1.0,Majority baseline
+batch2::1537213103397830656,batch2,SemutMerah2024,0,1,1.0,Majority baseline
+batch2::1889344272685768704,batch2,RebutKedaulat4n,1,1,1.0,Majority baseline
+batch2::1015706575,batch2,troides_helenaa,0,1,1.0,Majority baseline
+batch2::620311523,batch2,deliknewscom,1,1,1.0,Majority baseline
+batch2::1599214818028040193,batch2,iHeartsRussell,0,1,1.0,Majority baseline
+batch2::1804826359929393152,batch2,anyingpukimak,0,1,1.0,Majority baseline
+batch2::1460812501369569286,batch2,seonggok_cerita,1,1,1.0,Majority baseline
+batch2::3172706335,batch2,lecleqrc,0,1,1.0,Majority baseline
+batch2::1512817025868959747,batch2,jangetes,1,1,1.0,Majority baseline
+batch2::154102750,batch2,Beritasatu,1,1,1.0,Majority baseline
+batch2::753234181019176961,batch2,aegis00000,1,1,1.0,Majority baseline
+batch2::100174047,batch2,FathraNazrul,1,1,1.0,Majority baseline
+batch2::2076243671524286464,batch2,KicauGaruda0,1,1,1.0,Majority baseline
+batch2::1124919681637203969,batch2,lsupportevery1,0,1,1.0,Majority baseline
+batch2::1942886404356476929,batch2,PrabowoRai29151,0,1,1.0,Majority baseline
+batch2::1947683991462526977,batch2,Samkuro_,0,1,1.0,Majority baseline
+batch2::2041832395431694336,batch2,Kakarototea,0,1,1.0,Majority baseline
+batch2::1163042789275262976,batch2,rahdanim,0,1,1.0,Majority baseline
+batch2::116673112,batch2,rahmatsn,0,1,1.0,Majority baseline
+batch2::1201105341825421313,batch2,roticoklatkejuh,0,1,1.0,Majority baseline
+batch2::1309770940532678656,batch2,einschleimer29,0,1,1.0,Majority baseline
+batch2::1335162502678605824,batch2,gwencanayok,0,1,1.0,Majority baseline
+batch2::137548883,batch2,saintpooney,0,1,1.0,Majority baseline
+batch2::1437750326707191812,batch2,MiskinTV_,1,1,1.0,Majority baseline
+batch2::1514987320457383938,batch2,anti_443,0,1,1.0,Majority baseline
+batch2::1701157880,batch2,chocosundaerv,1,1,1.0,Majority baseline
+batch2::1802130557226356737,batch2,jejaknarasiid,1,1,1.0,Majority baseline
+batch2::1846772767188041728,batch2,labulabubuuu92,0,1,1.0,Majority baseline
+batch2::1849123922756952064,batch2,17817itadakimas,0,1,1.0,Majority baseline
+batch2::1868918299180027904,batch2,kittygwn,0,1,1.0,Majority baseline
+batch2::1870701646638137344,batch2,dsideofblue,0,1,1.0,Majority baseline
+batch2::2074070543847038977,batch2,leoferd97,0,1,1.0,Majority baseline
+batch2::2423499978,batch2,markhenryy_,0,1,1.0,Majority baseline
+batch2::271932146,batch2,dionysiusdion,0,1,1.0,Majority baseline
+batch2::48359478,batch2,Melihat_Indo,1,1,1.0,Majority baseline
+batch2::586241670,batch2,sndygs,0,1,1.0,Majority baseline
+batch2::785145642,batch2,Jateng_Twit,1,1,1.0,Majority baseline
+batch3::1608041882856349698,batch3,Berita_A1,1,1,1.0,Majority baseline
+batch3::1617455387220787203,batch3,zwucce,1,1,1.0,Majority baseline
+batch3::1629530059265703938,batch3,Srik4ndiMuslim2,1,1,1.0,Majority baseline
+batch3::1766624984766853120,batch3,AuraKasih0872,1,1,1.0,Majority baseline
+batch3::1766629692948590592,batch3,CSukhova61073,0,1,1.0,Majority baseline
+batch3::1766640890226044928,batch3,dfn1432034,1,1,1.0,Majority baseline
+batch3::1766659361970225152,batch3,bry213903767212,1,1,1.0,Majority baseline
+batch3::1767693771767173120,batch3,CableQuantum,1,1,1.0,Majority baseline
+batch3::1767695623950864384,batch3,dewa76812781826,0,1,1.0,Majority baseline
+batch3::1767698437993287680,batch3,cableact,0,1,1.0,Majority baseline
+batch3::1767703136062623744,batch3,troothar,0,1,1.0,Majority baseline
+batch3::1767720414434959360,batch3,syedbry64190,1,1,1.0,Majority baseline
+batch3::1767990587079405568,batch3,Joker514726,1,1,1.0,Majority baseline
+batch3::1768203864808079360,batch3,adryanqyg2c,1,1,1.0,Majority baseline
+batch3::1768226689761574913,batch3,dennyfebia50888,0,1,1.0,Majority baseline
+batch3::1771681447688249344,batch3,godeedk45297,1,1,1.0,Majority baseline
+batch3::1805815904909115395,batch3,radarhots,1,1,1.0,Majority baseline
+batch3::181560855,batch3,wahyu_panda,0,1,1.0,Majority baseline
+batch3::1822465751992963073,batch3,hotradars,1,1,1.0,Majority baseline
+batch3::1825846769101754368,batch3,sayurku44194,1,1,1.0,Majority baseline
+batch3::1863484917952516096,batch3,parjo4423939442,1,1,1.0,Majority baseline
+batch3::1884178679766605829,batch3,Charism_Web3,0,1,1.0,Majority baseline
+batch3::1884211186918666240,batch3,zetao1234,1,1,1.0,Majority baseline
+batch3::1947889563013419009,batch3,Jogja434788,1,1,1.0,Majority baseline
+batch3::2078659335471996928,batch3,infonewsgo,1,1,1.0,Majority baseline
+batch3::2428845116,batch3,IndonesiaGelapp,1,1,1.0,Majority baseline
+batch3::3527049614,batch3,didithardworker,1,1,1.0,Majority baseline
+batch3::49935892,batch3,SheIsAStarseed,1,1,1.0,Majority baseline
+batch3::68152093,batch3,Small12Forward,0,1,1.0,Majority baseline
+batch3::780554097388687360,batch3,asboediono_id,1,1,1.0,Majority baseline
+batch3::1226436091617505281,batch3,keuangannews_id,1,1,1.0,Majority baseline
+batch3::1253343071070109709,batch3,devnindyasfh,0,1,1.0,Majority baseline
+batch3::1344315723502342144,batch3,RTobazz,1,1,1.0,Majority baseline
+batch3::1440201477675384835,batch3,remaerts,0,1,1.0,Majority baseline
+batch3::1460190656182194177,batch3,LyliDeer183,0,1,1.0,Majority baseline
+batch3::1466788849552539652,batch3,Lian1961To,1,1,1.0,Majority baseline
+batch3::1556286745238708224,batch3,happy_43ver,0,1,1.0,Majority baseline
+batch3::1584459166311018497,batch3,PMuchlik,1,1,1.0,Majority baseline
+batch3::1603741074605760512,batch3,MujitoBewing,1,1,1.0,Majority baseline
+batch3::1695437873187889152,batch3,annabaenaazol,0,1,1.0,Majority baseline
+batch3::1745265761416056832,batch3,indepenSumatera,1,1,1.0,Majority baseline
+batch3::191674288,batch3,6ilpam,0,1,1.0,Majority baseline
+batch3::1931239562648653824,batch3,spearsparkles,0,1,1.0,Majority baseline
+batch3::1982221716815478784,batch3,pacarmarklee217,0,1,1.0,Majority baseline
+batch3::1994759633903493120,batch3,BennySiz,0,1,1.0,Majority baseline
+batch3::2006572491263909888,batch3,HamidStore36610,0,1,1.0,Majority baseline
+batch3::2084962212939251713,batch3,Lakeswara19,0,1,1.0,Majority baseline
+batch3::2167602541,batch3,gugulalakuku,0,1,1.0,Majority baseline
+batch3::2281270728,batch3,sonnyprakosa7,1,1,1.0,Majority baseline
+batch3::736441309,batch3,RADEN_NUH_,0,1,1.0,Majority baseline
+batch2::1089589044609044480,batch2,posrondart9,1,1,0.8631584587769362,NLP-only RF
+batch2::1048161416673341441,batch2,asaprosul,1,1,0.6781987631759763,NLP-only RF
+batch2::2004132912875307008,batch2,FITRI688212,1,1,0.8463561328579465,NLP-only RF
+batch2::1878777516296679424,batch2,mzk716524,1,1,0.6083157774763337,NLP-only RF
+batch2::1448884002186694658,batch2,bukan_fufufafa_,1,1,0.873339634923207,NLP-only RF
+batch2::2051482579946336257,batch2,Up_informasi,1,1,0.8573749858987159,NLP-only RF
+batch2::1809710719644102656,batch2,Addaily11,1,1,0.8910992124004539,NLP-only RF
+batch2::1938137369255022592,batch2,jurnalkencan,0,0,0.46836148640505276,NLP-only RF
+batch2::797761417894051840,batch2,MarahIchsan,1,1,0.7347880071158881,NLP-only RF
+batch2::743782467262251008,batch2,dzikdzikdzik,0,1,0.5016616419014412,NLP-only RF
+batch2::2033062906628292608,batch2,EzeeDMeme,0,0,0.4077690319184098,NLP-only RF
+batch2::1868400477416951808,batch2,tukangberi,1,0,0.36982080231168096,NLP-only RF
+batch2::1619497882842959872,batch2,hanhan2901,1,0,0.40046158496941425,NLP-only RF
+batch2::1537213103397830656,batch2,SemutMerah2024,0,0,0.004324380165289256,NLP-only RF
+batch2::1889344272685768704,batch2,RebutKedaulat4n,1,1,0.8999039215542113,NLP-only RF
+batch2::1015706575,batch2,troides_helenaa,0,0,0.12701934817167648,NLP-only RF
+batch2::620311523,batch2,deliknewscom,1,1,0.9102690372694617,NLP-only RF
+batch2::1599214818028040193,batch2,iHeartsRussell,0,1,0.7459857948641538,NLP-only RF
+batch2::1804826359929393152,batch2,anyingpukimak,0,1,0.53666197144127,NLP-only RF
+batch2::1460812501369569286,batch2,seonggok_cerita,1,1,0.7889812873004025,NLP-only RF
+batch2::3172706335,batch2,lecleqrc,0,1,0.9092803060067909,NLP-only RF
+batch2::1512817025868959747,batch2,jangetes,1,0,0.16670432747474148,NLP-only RF
+batch2::154102750,batch2,Beritasatu,1,1,0.8592268586667997,NLP-only RF
+batch2::753234181019176961,batch2,aegis00000,1,1,0.9104252280681322,NLP-only RF
+batch2::100174047,batch2,FathraNazrul,1,1,0.7561495812224173,NLP-only RF
+batch2::2076243671524286464,batch2,KicauGaruda0,1,1,0.7673524656734003,NLP-only RF
+batch2::1124919681637203969,batch2,lsupportevery1,0,0,0.2558440015619379,NLP-only RF
+batch2::1942886404356476929,batch2,PrabowoRai29151,0,0,0.02231996416561088,NLP-only RF
+batch2::1947683991462526977,batch2,Samkuro_,0,0,0.14660092446325945,NLP-only RF
+batch2::2041832395431694336,batch2,Kakarototea,0,0,0.0995610947512756,NLP-only RF
+batch2::1163042789275262976,batch2,rahdanim,0,0,0.09014766029891169,NLP-only RF
+batch2::116673112,batch2,rahmatsn,0,0,0.323214760335259,NLP-only RF
+batch2::1201105341825421313,batch2,roticoklatkejuh,0,0,0.18079395356361405,NLP-only RF
+batch2::1309770940532678656,batch2,einschleimer29,0,1,0.5680783004331288,NLP-only RF
+batch2::1335162502678605824,batch2,gwencanayok,0,0,0.3467006346214019,NLP-only RF
+batch2::137548883,batch2,saintpooney,0,0,0.4582070258632382,NLP-only RF
+batch2::1437750326707191812,batch2,MiskinTV_,1,1,0.6599899539518367,NLP-only RF
+batch2::1514987320457383938,batch2,anti_443,0,0,0.49155978833119407,NLP-only RF
+batch2::1701157880,batch2,chocosundaerv,1,0,0.05508825047358917,NLP-only RF
+batch2::1802130557226356737,batch2,jejaknarasiid,1,1,0.6887239792301325,NLP-only RF
+batch2::1846772767188041728,batch2,labulabubuuu92,0,0,0.2950269444585464,NLP-only RF
+batch2::1849123922756952064,batch2,17817itadakimas,0,0,0.3350683684258024,NLP-only RF
+batch2::1868918299180027904,batch2,kittygwn,0,0,0.3723635747611641,NLP-only RF
+batch2::1870701646638137344,batch2,dsideofblue,0,0,0.23768249763040256,NLP-only RF
+batch2::2074070543847038977,batch2,leoferd97,0,1,0.5692409990367028,NLP-only RF
+batch2::2423499978,batch2,markhenryy_,0,0,0.12166348658602276,NLP-only RF
+batch2::271932146,batch2,dionysiusdion,0,0,0.4866929488257814,NLP-only RF
+batch2::48359478,batch2,Melihat_Indo,1,1,0.5780003447927662,NLP-only RF
+batch2::586241670,batch2,sndygs,0,0,0.14113798362133817,NLP-only RF
+batch2::785145642,batch2,Jateng_Twit,1,1,0.7008839474993676,NLP-only RF
+batch3::1608041882856349698,batch3,Berita_A1,1,1,0.8954194990204871,NLP-only RF
+batch3::1617455387220787203,batch3,zwucce,1,1,0.7695978627113537,NLP-only RF
+batch3::1629530059265703938,batch3,Srik4ndiMuslim2,1,1,0.8073379212600655,NLP-only RF
+batch3::1766624984766853120,batch3,AuraKasih0872,1,1,0.5821408880602351,NLP-only RF
+batch3::1766629692948590592,batch3,CSukhova61073,0,1,0.8798636277752477,NLP-only RF
+batch3::1766640890226044928,batch3,dfn1432034,1,1,0.7199891165837511,NLP-only RF
+batch3::1766659361970225152,batch3,bry213903767212,1,1,0.5681460913525808,NLP-only RF
+batch3::1767693771767173120,batch3,CableQuantum,1,1,0.870793381600638,NLP-only RF
+batch3::1767695623950864384,batch3,dewa76812781826,0,1,0.9100464131228211,NLP-only RF
+batch3::1767698437993287680,batch3,cableact,0,1,0.5305300506640936,NLP-only RF
+batch3::1767703136062623744,batch3,troothar,0,1,0.5392032551140276,NLP-only RF
+batch3::1767720414434959360,batch3,syedbry64190,1,1,0.7871119965207676,NLP-only RF
+batch3::1767990587079405568,batch3,Joker514726,1,1,0.8108775282540039,NLP-only RF
+batch3::1768203864808079360,batch3,adryanqyg2c,1,1,0.9354654487043192,NLP-only RF
+batch3::1768226689761574913,batch3,dennyfebia50888,0,1,0.5408092942541831,NLP-only RF
+batch3::1771681447688249344,batch3,godeedk45297,1,1,0.6019307102610222,NLP-only RF
+batch3::1805815904909115395,batch3,radarhots,1,1,0.8108775282540039,NLP-only RF
+batch3::181560855,batch3,wahyu_panda,0,1,0.5031555105816469,NLP-only RF
+batch3::1822465751992963073,batch3,hotradars,1,1,0.7834954921859086,NLP-only RF
+batch3::1825846769101754368,batch3,sayurku44194,1,0,0.036717856315952736,NLP-only RF
+batch3::1863484917952516096,batch3,parjo4423939442,1,1,0.733976221577732,NLP-only RF
+batch3::1884178679766605829,batch3,Charism_Web3,0,1,0.8485245784348805,NLP-only RF
+batch3::1884211186918666240,batch3,zetao1234,1,1,0.7834626923684769,NLP-only RF
+batch3::1947889563013419009,batch3,Jogja434788,1,0,0.23748034157977135,NLP-only RF
+batch3::2078659335471996928,batch3,infonewsgo,1,1,0.5362984752160492,NLP-only RF
+batch3::2428845116,batch3,IndonesiaGelapp,1,0,0.3537969663131502,NLP-only RF
+batch3::3527049614,batch3,didithardworker,1,0,0.0,NLP-only RF
+batch3::49935892,batch3,SheIsAStarseed,1,1,0.5822750838177441,NLP-only RF
+batch3::68152093,batch3,Small12Forward,0,0,0.21194665759077289,NLP-only RF
+batch3::780554097388687360,batch3,asboediono_id,1,1,0.8347322181949168,NLP-only RF
+batch3::1226436091617505281,batch3,keuangannews_id,1,0,0.29175508786307536,NLP-only RF
+batch3::1253343071070109709,batch3,devnindyasfh,0,0,0.04766875330911546,NLP-only RF
+batch3::1344315723502342144,batch3,RTobazz,1,0,0.4124302188175595,NLP-only RF
+batch3::1440201477675384835,batch3,remaerts,0,0,0.11904155302781788,NLP-only RF
+batch3::1460190656182194177,batch3,LyliDeer183,0,0,0.32863034020098364,NLP-only RF
+batch3::1466788849552539652,batch3,Lian1961To,1,1,0.5175431113471393,NLP-only RF
+batch3::1556286745238708224,batch3,happy_43ver,0,1,0.5707629073171046,NLP-only RF
+batch3::1584459166311018497,batch3,PMuchlik,1,1,0.7094147249373379,NLP-only RF
+batch3::1603741074605760512,batch3,MujitoBewing,1,0,0.307552161214037,NLP-only RF
+batch3::1695437873187889152,batch3,annabaenaazol,0,0,0.04766875330911546,NLP-only RF
+batch3::1745265761416056832,batch3,indepenSumatera,1,1,0.6807997891668465,NLP-only RF
+batch3::191674288,batch3,6ilpam,0,1,0.6286064464055001,NLP-only RF
+batch3::1931239562648653824,batch3,spearsparkles,0,0,0.4486307935280207,NLP-only RF
+batch3::1982221716815478784,batch3,pacarmarklee217,0,0,0.38675923552392477,NLP-only RF
+batch3::1994759633903493120,batch3,BennySiz,0,0,0.02069496416561088,NLP-only RF
+batch3::2006572491263909888,batch3,HamidStore36610,0,0,0.14610889236027924,NLP-only RF
+batch3::2084962212939251713,batch3,Lakeswara19,0,0,0.2979963853124197,NLP-only RF
+batch3::2167602541,batch3,gugulalakuku,0,0,0.22502210609020035,NLP-only RF
+batch3::2281270728,batch3,sonnyprakosa7,1,0,0.34551366618853774,NLP-only RF
+batch3::736441309,batch3,RADEN_NUH_,0,0,0.38550616842018276,NLP-only RF
+batch2::1089589044609044480,batch2,posrondart9,1,1,0.5134537299766048,Temporal-only RF
+batch2::1048161416673341441,batch2,asaprosul,1,0,0.3004899965939451,Temporal-only RF
+batch2::2004132912875307008,batch2,FITRI688212,1,1,0.5304589835159995,Temporal-only RF
+batch2::1878777516296679424,batch2,mzk716524,1,1,0.5304589835159995,Temporal-only RF
+batch2::1448884002186694658,batch2,bukan_fufufafa_,1,1,0.5422820174017935,Temporal-only RF
+batch2::2051482579946336257,batch2,Up_informasi,1,1,0.5683001436118604,Temporal-only RF
+batch2::1809710719644102656,batch2,Addaily11,1,1,0.5134537299766048,Temporal-only RF
+batch2::1938137369255022592,batch2,jurnalkencan,0,1,0.7783592016179738,Temporal-only RF
+batch2::797761417894051840,batch2,MarahIchsan,1,1,0.534208436463399,Temporal-only RF
+batch2::743782467262251008,batch2,dzikdzikdzik,0,0,0.253015245459891,Temporal-only RF
+batch2::2033062906628292608,batch2,EzeeDMeme,0,1,0.5219949426419697,Temporal-only RF
+batch2::1868400477416951808,batch2,tukangberi,1,1,0.8231258637139108,Temporal-only RF
+batch2::1619497882842959872,batch2,hanhan2901,1,0,0.36729053233974224,Temporal-only RF
+batch2::1537213103397830656,batch2,SemutMerah2024,0,1,0.8027596256719782,Temporal-only RF
+batch2::1889344272685768704,batch2,RebutKedaulat4n,1,1,0.5219949426419697,Temporal-only RF
+batch2::1015706575,batch2,troides_helenaa,0,0,0.4989760222488999,Temporal-only RF
+batch2::620311523,batch2,deliknewscom,1,1,0.5683001436118604,Temporal-only RF
+batch2::1599214818028040193,batch2,iHeartsRussell,0,0,0.49162781311077236,Temporal-only RF
+batch2::1804826359929393152,batch2,anyingpukimak,0,1,0.7220924687780929,Temporal-only RF
+batch2::1460812501369569286,batch2,seonggok_cerita,1,1,0.6833244319787575,Temporal-only RF
+batch2::3172706335,batch2,lecleqrc,0,0,0.4989760222488999,Temporal-only RF
+batch2::1512817025868959747,batch2,jangetes,1,0,0.3397611336041309,Temporal-only RF
+batch2::154102750,batch2,Beritasatu,1,1,0.5134537299766048,Temporal-only RF
+batch2::753234181019176961,batch2,aegis00000,1,1,0.5219949426419697,Temporal-only RF
+batch2::100174047,batch2,FathraNazrul,1,1,0.5219949426419697,Temporal-only RF
+batch2::2076243671524286464,batch2,KicauGaruda0,1,1,0.5134537299766048,Temporal-only RF
+batch2::1124919681637203969,batch2,lsupportevery1,0,0,0.29284209023574387,Temporal-only RF
+batch2::1942886404356476929,batch2,PrabowoRai29151,0,0,0.3004899965939451,Temporal-only RF
+batch2::1947683991462526977,batch2,Samkuro_,0,0,0.253015245459891,Temporal-only RF
+batch2::2041832395431694336,batch2,Kakarototea,0,0,0.3004899965939451,Temporal-only RF
+batch2::1163042789275262976,batch2,rahdanim,0,0,0.25924881609059686,Temporal-only RF
+batch2::116673112,batch2,rahmatsn,0,1,0.5219949426419697,Temporal-only RF
+batch2::1201105341825421313,batch2,roticoklatkejuh,0,1,0.5092833148248264,Temporal-only RF
+batch2::1309770940532678656,batch2,einschleimer29,0,0,0.253015245459891,Temporal-only RF
+batch2::1335162502678605824,batch2,gwencanayok,0,0,0.29284209023574387,Temporal-only RF
+batch2::137548883,batch2,saintpooney,0,1,0.5944401395154992,Temporal-only RF
+batch2::1437750326707191812,batch2,MiskinTV_,1,1,0.5683001436118604,Temporal-only RF
+batch2::1514987320457383938,batch2,anti_443,0,1,0.5683001436118604,Temporal-only RF
+batch2::1701157880,batch2,chocosundaerv,1,0,0.2475173517046269,Temporal-only RF
+batch2::1802130557226356737,batch2,jejaknarasiid,1,1,0.5422820174017935,Temporal-only RF
+batch2::1846772767188041728,batch2,labulabubuuu92,0,1,0.5781119567443616,Temporal-only RF
+batch2::1849123922756952064,batch2,17817itadakimas,0,0,0.2475173517046269,Temporal-only RF
+batch2::1868918299180027904,batch2,kittygwn,0,1,0.5134537299766048,Temporal-only RF
+batch2::1870701646638137344,batch2,dsideofblue,0,0,0.3004899965939451,Temporal-only RF
+batch2::2074070543847038977,batch2,leoferd97,0,0,0.29284209023574387,Temporal-only RF
+batch2::2423499978,batch2,markhenryy_,0,1,0.5134537299766048,Temporal-only RF
+batch2::271932146,batch2,dionysiusdion,0,0,0.2475173517046269,Temporal-only RF
+batch2::48359478,batch2,Melihat_Indo,1,1,0.5852544442819221,Temporal-only RF
+batch2::586241670,batch2,sndygs,0,1,0.5304589835159995,Temporal-only RF
+batch2::785145642,batch2,Jateng_Twit,1,1,0.5422820174017935,Temporal-only RF
+batch3::1608041882856349698,batch3,Berita_A1,1,1,0.5781119567443616,Temporal-only RF
+batch3::1617455387220787203,batch3,zwucce,1,1,0.5219949426419697,Temporal-only RF
+batch3::1629530059265703938,batch3,Srik4ndiMuslim2,1,0,0.253015245459891,Temporal-only RF
+batch3::1766624984766853120,batch3,AuraKasih0872,1,0,0.49162781311077236,Temporal-only RF
+batch3::1766629692948590592,batch3,CSukhova61073,0,1,0.5368863297777207,Temporal-only RF
+batch3::1766640890226044928,batch3,dfn1432034,1,0,0.49162781311077236,Temporal-only RF
+batch3::1766659361970225152,batch3,bry213903767212,1,1,0.5944401395154992,Temporal-only RF
+batch3::1767693771767173120,batch3,CableQuantum,1,0,0.4989760222488999,Temporal-only RF
+batch3::1767695623950864384,batch3,dewa76812781826,0,1,0.5781119567443616,Temporal-only RF
+batch3::1767698437993287680,batch3,cableact,0,1,0.5781119567443616,Temporal-only RF
+batch3::1767703136062623744,batch3,troothar,0,1,0.5944401395154992,Temporal-only RF
+batch3::1767720414434959360,batch3,syedbry64190,1,0,0.4989760222488999,Temporal-only RF
+batch3::1767990587079405568,batch3,Joker514726,1,0,0.49162781311077236,Temporal-only RF
+batch3::1768203864808079360,batch3,adryanqyg2c,1,1,0.5368863297777207,Temporal-only RF
+batch3::1768226689761574913,batch3,dennyfebia50888,0,1,0.5944401395154992,Temporal-only RF
+batch3::1771681447688249344,batch3,godeedk45297,1,0,0.4989760222488999,Temporal-only RF
+batch3::1805815904909115395,batch3,radarhots,1,0,0.49162781311077236,Temporal-only RF
+batch3::181560855,batch3,wahyu_panda,0,1,0.9394502873786265,Temporal-only RF
+batch3::1822465751992963073,batch3,hotradars,1,1,0.5781119567443616,Temporal-only RF
+batch3::1825846769101754368,batch3,sayurku44194,1,1,0.7177875913945253,Temporal-only RF
+batch3::1863484917952516096,batch3,parjo4423939442,1,1,0.727300658897227,Temporal-only RF
+batch3::1884178679766605829,batch3,Charism_Web3,0,1,0.5422820174017935,Temporal-only RF
+batch3::1884211186918666240,batch3,zetao1234,1,1,0.5368863297777207,Temporal-only RF
+batch3::1947889563013419009,batch3,Jogja434788,1,1,0.7626614818002037,Temporal-only RF
+batch3::2078659335471996928,batch3,infonewsgo,1,1,0.5944401395154992,Temporal-only RF
+batch3::2428845116,batch3,IndonesiaGelapp,1,0,0.29284209023574387,Temporal-only RF
+batch3::3527049614,batch3,didithardworker,1,1,0.7314360947060973,Temporal-only RF
+batch3::49935892,batch3,SheIsAStarseed,1,0,0.4989760222488999,Temporal-only RF
+batch3::68152093,batch3,Small12Forward,0,1,0.5134537299766048,Temporal-only RF
+batch3::780554097388687360,batch3,asboediono_id,1,0,0.31716909871970517,Temporal-only RF
+batch3::1226436091617505281,batch3,keuangannews_id,1,1,0.7136390349777415,Temporal-only RF
+batch3::1253343071070109709,batch3,devnindyasfh,0,1,0.5683001436118604,Temporal-only RF
+batch3::1344315723502342144,batch3,RTobazz,1,0,0.471662185149464,Temporal-only RF
+batch3::1440201477675384835,batch3,remaerts,0,0,0.253015245459891,Temporal-only RF
+batch3::1460190656182194177,batch3,LyliDeer183,0,0,0.29284209023574387,Temporal-only RF
+batch3::1466788849552539652,batch3,Lian1961To,1,0,0.25924881609059686,Temporal-only RF
+batch3::1556286745238708224,batch3,happy_43ver,0,0,0.3004899965939451,Temporal-only RF
+batch3::1584459166311018497,batch3,PMuchlik,1,0,0.2475173517046269,Temporal-only RF
+batch3::1603741074605760512,batch3,MujitoBewing,1,0,0.253015245459891,Temporal-only RF
+batch3::1695437873187889152,batch3,annabaenaazol,0,1,0.5683001436118604,Temporal-only RF
+batch3::1745265761416056832,batch3,indepenSumatera,1,1,0.5304589835159995,Temporal-only RF
+batch3::191674288,batch3,6ilpam,0,1,0.5304589835159995,Temporal-only RF
+batch3::1931239562648653824,batch3,spearsparkles,0,1,0.5683001436118604,Temporal-only RF
+batch3::1982221716815478784,batch3,pacarmarklee217,0,0,0.2475173517046269,Temporal-only RF
+batch3::1994759633903493120,batch3,BennySiz,0,0,0.3004899965939451,Temporal-only RF
+batch3::2006572491263909888,batch3,HamidStore36610,0,1,0.5368863297777207,Temporal-only RF
+batch3::2084962212939251713,batch3,Lakeswara19,0,1,0.9107841527171561,Temporal-only RF
+batch3::2167602541,batch3,gugulalakuku,0,0,0.253015245459891,Temporal-only RF
+batch3::2281270728,batch3,sonnyprakosa7,1,0,0.47027978033568674,Temporal-only RF
+batch3::736441309,batch3,RADEN_NUH_,0,1,0.5422820174017935,Temporal-only RF
+batch2::1089589044609044480,batch2,posrondart9,1,1,0.727265399102381,Graph-only RF
+batch2::1048161416673341441,batch2,asaprosul,1,0,0.11917655855725577,Graph-only RF
+batch2::2004132912875307008,batch2,FITRI688212,1,1,0.7447056605290046,Graph-only RF
+batch2::1878777516296679424,batch2,mzk716524,1,1,0.7447056605290046,Graph-only RF
+batch2::1448884002186694658,batch2,bukan_fufufafa_,1,1,0.6791198195537222,Graph-only RF
+batch2::2051482579946336257,batch2,Up_informasi,1,1,0.7086421681270326,Graph-only RF
+batch2::1809710719644102656,batch2,Addaily11,1,1,0.727265399102381,Graph-only RF
+batch2::1938137369255022592,batch2,jurnalkencan,0,1,0.5438977143257339,Graph-only RF
+batch2::797761417894051840,batch2,MarahIchsan,1,0,0.13937727097948732,Graph-only RF
+batch2::743782467262251008,batch2,dzikdzikdzik,0,0,0.20561858151653833,Graph-only RF
+batch2::2033062906628292608,batch2,EzeeDMeme,0,1,0.7729443894776247,Graph-only RF
+batch2::1868400477416951808,batch2,tukangberi,1,1,0.7086421681270326,Graph-only RF
+batch2::1619497882842959872,batch2,hanhan2901,1,0,0.20378717270531554,Graph-only RF
+batch2::1537213103397830656,batch2,SemutMerah2024,0,0,0.1585035527613656,Graph-only RF
+batch2::1889344272685768704,batch2,RebutKedaulat4n,1,1,0.7729443894776247,Graph-only RF
+batch2::1015706575,batch2,troides_helenaa,0,0,0.21721414085651547,Graph-only RF
+batch2::620311523,batch2,deliknewscom,1,1,0.7086421681270326,Graph-only RF
+batch2::1599214818028040193,batch2,iHeartsRussell,0,0,0.3688493254485845,Graph-only RF
+batch2::1804826359929393152,batch2,anyingpukimak,0,0,0.07437340094912093,Graph-only RF
+batch2::1460812501369569286,batch2,seonggok_cerita,1,1,0.727265399102381,Graph-only RF
+batch2::3172706335,batch2,lecleqrc,0,0,0.21721414085651547,Graph-only RF
+batch2::1512817025868959747,batch2,jangetes,1,0,0.2239269918037678,Graph-only RF
+batch2::154102750,batch2,Beritasatu,1,1,0.727265399102381,Graph-only RF
+batch2::753234181019176961,batch2,aegis00000,1,1,0.7729443894776247,Graph-only RF
+batch2::100174047,batch2,FathraNazrul,1,1,0.7729443894776247,Graph-only RF
+batch2::2076243671524286464,batch2,KicauGaruda0,1,1,0.727265399102381,Graph-only RF
+batch2::1124919681637203969,batch2,lsupportevery1,0,0,0.13937727097948732,Graph-only RF
+batch2::1942886404356476929,batch2,PrabowoRai29151,0,0,0.303397272407549,Graph-only RF
+batch2::1947683991462526977,batch2,Samkuro_,0,0,0.20561858151653833,Graph-only RF
+batch2::2041832395431694336,batch2,Kakarototea,0,0,0.21386056469362022,Graph-only RF
+batch2::1163042789275262976,batch2,rahdanim,0,0,0.21721414085651547,Graph-only RF
+batch2::116673112,batch2,rahmatsn,0,1,0.7729443894776247,Graph-only RF
+batch2::1201105341825421313,batch2,roticoklatkejuh,0,1,0.627273974620066,Graph-only RF
+batch2::1309770940532678656,batch2,einschleimer29,0,0,0.04537027939262698,Graph-only RF
+batch2::1335162502678605824,batch2,gwencanayok,0,0,0.17846528943225523,Graph-only RF
+batch2::137548883,batch2,saintpooney,0,0,0.38280789281786604,Graph-only RF
+batch2::1437750326707191812,batch2,MiskinTV_,1,1,0.7086421681270326,Graph-only RF
+batch2::1514987320457383938,batch2,anti_443,0,1,0.7086421681270326,Graph-only RF
+batch2::1701157880,batch2,chocosundaerv,1,0,0.15718441966304206,Graph-only RF
+batch2::1802130557226356737,batch2,jejaknarasiid,1,1,0.6791198195537222,Graph-only RF
+batch2::1846772767188041728,batch2,labulabubuuu92,0,0,0.13937727097948732,Graph-only RF
+batch2::1849123922756952064,batch2,17817itadakimas,0,0,0.18132004016817843,Graph-only RF
+batch2::1868918299180027904,batch2,kittygwn,0,1,0.727265399102381,Graph-only RF
+batch2::1870701646638137344,batch2,dsideofblue,0,0,0.11917655855725577,Graph-only RF
+batch2::2074070543847038977,batch2,leoferd97,0,0,0.13937727097948732,Graph-only RF
+batch2::2423499978,batch2,markhenryy_,0,1,0.727265399102381,Graph-only RF
+batch2::271932146,batch2,dionysiusdion,0,0,0.1585035527613656,Graph-only RF
+batch2::48359478,batch2,Melihat_Indo,1,1,0.6791198195537222,Graph-only RF
+batch2::586241670,batch2,sndygs,0,1,0.7447056605290046,Graph-only RF
+batch2::785145642,batch2,Jateng_Twit,1,1,0.6791198195537222,Graph-only RF
+batch3::1608041882856349698,batch3,Berita_A1,1,1,0.7629745052332131,Graph-only RF
+batch3::1617455387220787203,batch3,zwucce,1,0,0.12738758779105167,Graph-only RF
+batch3::1629530059265703938,batch3,Srik4ndiMuslim2,1,1,0.5714000507480019,Graph-only RF
+batch3::1766624984766853120,batch3,AuraKasih0872,1,1,0.6453438703926878,Graph-only RF
+batch3::1766629692948590592,batch3,CSukhova61073,0,1,0.7012895388748824,Graph-only RF
+batch3::1766640890226044928,batch3,dfn1432034,1,1,0.6453438703926878,Graph-only RF
+batch3::1766659361970225152,batch3,bry213903767212,1,1,0.7651057579654206,Graph-only RF
+batch3::1767693771767173120,batch3,CableQuantum,1,1,0.6383715393691434,Graph-only RF
+batch3::1767695623950864384,batch3,dewa76812781826,0,1,0.7629745052332131,Graph-only RF
+batch3::1767698437993287680,batch3,cableact,0,1,0.7629745052332131,Graph-only RF
+batch3::1767703136062623744,batch3,troothar,0,1,0.7651057579654206,Graph-only RF
+batch3::1767720414434959360,batch3,syedbry64190,1,1,0.6383715393691434,Graph-only RF
+batch3::1767990587079405568,batch3,Joker514726,1,1,0.6453438703926878,Graph-only RF
+batch3::1768203864808079360,batch3,adryanqyg2c,1,1,0.7012895388748824,Graph-only RF
+batch3::1768226689761574913,batch3,dennyfebia50888,0,1,0.7651057579654206,Graph-only RF
+batch3::1771681447688249344,batch3,godeedk45297,1,1,0.6383715393691434,Graph-only RF
+batch3::1805815904909115395,batch3,radarhots,1,1,0.6453438703926878,Graph-only RF
+batch3::181560855,batch3,wahyu_panda,0,1,0.8845164903265919,Graph-only RF
+batch3::1822465751992963073,batch3,hotradars,1,1,0.7629745052332131,Graph-only RF
+batch3::1825846769101754368,batch3,sayurku44194,1,1,0.6961919167927655,Graph-only RF
+batch3::1863484917952516096,batch3,parjo4423939442,1,1,0.6212743465185941,Graph-only RF
+batch3::1884178679766605829,batch3,Charism_Web3,0,0,0.36756739078033324,Graph-only RF
+batch3::1884211186918666240,batch3,zetao1234,1,1,0.7012895388748824,Graph-only RF
+batch3::1947889563013419009,batch3,Jogja434788,1,0,0.24716737292650226,Graph-only RF
+batch3::2078659335471996928,batch3,infonewsgo,1,1,0.7651057579654206,Graph-only RF
+batch3::2428845116,batch3,IndonesiaGelapp,1,1,0.671055131083529,Graph-only RF
+batch3::3527049614,batch3,didithardworker,1,1,0.6961919167927655,Graph-only RF
+batch3::49935892,batch3,SheIsAStarseed,1,1,0.6267600189410154,Graph-only RF
+batch3::68152093,batch3,Small12Forward,0,0,0.3123178418281907,Graph-only RF
+batch3::780554097388687360,batch3,asboediono_id,1,0,0.27652212835105433,Graph-only RF
+batch3::1226436091617505281,batch3,keuangannews_id,1,0,0.12738758779105167,Graph-only RF
+batch3::1253343071070109709,batch3,devnindyasfh,0,0,0.48037648951655976,Graph-only RF
+batch3::1344315723502342144,batch3,RTobazz,1,1,0.8544264658406424,Graph-only RF
+batch3::1440201477675384835,batch3,remaerts,0,0,0.3812144782508274,Graph-only RF
+batch3::1460190656182194177,batch3,LyliDeer183,0,0,0.27652212835105433,Graph-only RF
+batch3::1466788849552539652,batch3,Lian1961To,1,0,0.1384031537527339,Graph-only RF
+batch3::1556286745238708224,batch3,happy_43ver,0,1,0.6163248912940225,Graph-only RF
+batch3::1584459166311018497,batch3,PMuchlik,1,1,0.6188759706534718,Graph-only RF
+batch3::1603741074605760512,batch3,MujitoBewing,1,1,0.7138209817408295,Graph-only RF
+batch3::1695437873187889152,batch3,annabaenaazol,0,0,0.48037648951655976,Graph-only RF
+batch3::1745265761416056832,batch3,indepenSumatera,1,1,0.5802125097306521,Graph-only RF
+batch3::191674288,batch3,6ilpam,0,0,0.24716737292650226,Graph-only RF
+batch3::1931239562648653824,batch3,spearsparkles,0,0,0.48037648951655976,Graph-only RF
+batch3::1982221716815478784,batch3,pacarmarklee217,0,0,0.2946747835459921,Graph-only RF
+batch3::1994759633903493120,batch3,BennySiz,0,1,0.8077942060757524,Graph-only RF
+batch3::2006572491263909888,batch3,HamidStore36610,0,0,0.4510266147030624,Graph-only RF
+batch3::2084962212939251713,batch3,Lakeswara19,0,0,0.48037648951655976,Graph-only RF
+batch3::2167602541,batch3,gugulalakuku,0,0,0.3812144782508274,Graph-only RF
+batch3::2281270728,batch3,sonnyprakosa7,1,1,0.6799426298628662,Graph-only RF
+batch3::736441309,batch3,RADEN_NUH_,0,1,0.5685524397259243,Graph-only RF
+batch2::1089589044609044480,batch2,posrondart9,1,1,0.9583098341989008,Combined Logistic Regression
+batch2::1048161416673341441,batch2,asaprosul,1,1,0.9122978424865898,Combined Logistic Regression
+batch2::2004132912875307008,batch2,FITRI688212,1,1,0.9460323198224909,Combined Logistic Regression
+batch2::1878777516296679424,batch2,mzk716524,1,1,0.9597745132024535,Combined Logistic Regression
+batch2::1448884002186694658,batch2,bukan_fufufafa_,1,1,0.999921451293247,Combined Logistic Regression
+batch2::2051482579946336257,batch2,Up_informasi,1,1,0.9530048560072952,Combined Logistic Regression
+batch2::1809710719644102656,batch2,Addaily11,1,1,0.9999988724491291,Combined Logistic Regression
+batch2::1938137369255022592,batch2,jurnalkencan,0,1,1.0,Combined Logistic Regression
+batch2::797761417894051840,batch2,MarahIchsan,1,0,0.436269035933033,Combined Logistic Regression
+batch2::743782467262251008,batch2,dzikdzikdzik,0,1,0.5073272891330615,Combined Logistic Regression
+batch2::2033062906628292608,batch2,EzeeDMeme,0,1,0.8085612266406067,Combined Logistic Regression
+batch2::1868400477416951808,batch2,tukangberi,1,0,0.18253447964768207,Combined Logistic Regression
+batch2::1619497882842959872,batch2,hanhan2901,1,0,0.29273335377214466,Combined Logistic Regression
+batch2::1537213103397830656,batch2,SemutMerah2024,0,0,0.317179114141494,Combined Logistic Regression
+batch2::1889344272685768704,batch2,RebutKedaulat4n,1,1,0.9172657834294636,Combined Logistic Regression
+batch2::1015706575,batch2,troides_helenaa,0,0,0.4623214073134759,Combined Logistic Regression
+batch2::620311523,batch2,deliknewscom,1,1,0.8905456861571832,Combined Logistic Regression
+batch2::1599214818028040193,batch2,iHeartsRussell,0,0,0.31546266316904714,Combined Logistic Regression
+batch2::1804826359929393152,batch2,anyingpukimak,0,1,0.5753873991465598,Combined Logistic Regression
+batch2::1460812501369569286,batch2,seonggok_cerita,1,1,0.821066988906063,Combined Logistic Regression
+batch2::3172706335,batch2,lecleqrc,0,1,0.9122608845833322,Combined Logistic Regression
+batch2::1512817025868959747,batch2,jangetes,1,0,0.24611694705780568,Combined Logistic Regression
+batch2::154102750,batch2,Beritasatu,1,1,0.9964669186352793,Combined Logistic Regression
+batch2::753234181019176961,batch2,aegis00000,1,1,0.9999920956731689,Combined Logistic Regression
+batch2::100174047,batch2,FathraNazrul,1,1,0.7148978400950982,Combined Logistic Regression
+batch2::2076243671524286464,batch2,KicauGaruda0,1,1,0.835278654296435,Combined Logistic Regression
+batch2::1124919681637203969,batch2,lsupportevery1,0,0,0.10608851557645889,Combined Logistic Regression
+batch2::1942886404356476929,batch2,PrabowoRai29151,0,0,0.13938061212918448,Combined Logistic Regression
+batch2::1947683991462526977,batch2,Samkuro_,0,0,0.1383459220919116,Combined Logistic Regression
+batch2::2041832395431694336,batch2,Kakarototea,0,0,0.1466394301064808,Combined Logistic Regression
+batch2::1163042789275262976,batch2,rahdanim,0,0,0.12384463911737252,Combined Logistic Regression
+batch2::116673112,batch2,rahmatsn,0,0,0.23776047524085306,Combined Logistic Regression
+batch2::1201105341825421313,batch2,roticoklatkejuh,0,0,0.4330840475996875,Combined Logistic Regression
+batch2::1309770940532678656,batch2,einschleimer29,0,1,0.5574704738402283,Combined Logistic Regression
+batch2::1335162502678605824,batch2,gwencanayok,0,0,0.1405417128238591,Combined Logistic Regression
+batch2::137548883,batch2,saintpooney,0,0,0.20753578657741245,Combined Logistic Regression
+batch2::1437750326707191812,batch2,MiskinTV_,1,0,0.43562240771348093,Combined Logistic Regression
+batch2::1514987320457383938,batch2,anti_443,0,0,0.11056796376573207,Combined Logistic Regression
+batch2::1701157880,batch2,chocosundaerv,1,0,0.15666782501217782,Combined Logistic Regression
+batch2::1802130557226356737,batch2,jejaknarasiid,1,1,0.5150706844116123,Combined Logistic Regression
+batch2::1846772767188041728,batch2,labulabubuuu92,0,0,0.38412419335609593,Combined Logistic Regression
+batch2::1849123922756952064,batch2,17817itadakimas,0,0,0.18820819122689098,Combined Logistic Regression
+batch2::1868918299180027904,batch2,kittygwn,0,0,0.34021463196104407,Combined Logistic Regression
+batch2::1870701646638137344,batch2,dsideofblue,0,0,0.29641670261811603,Combined Logistic Regression
+batch2::2074070543847038977,batch2,leoferd97,0,0,0.1791901259377715,Combined Logistic Regression
+batch2::2423499978,batch2,markhenryy_,0,0,0.19805484871534432,Combined Logistic Regression
+batch2::271932146,batch2,dionysiusdion,0,0,0.30260358334952636,Combined Logistic Regression
+batch2::48359478,batch2,Melihat_Indo,1,1,0.999442596335266,Combined Logistic Regression
+batch2::586241670,batch2,sndygs,0,0,0.22795747546532355,Combined Logistic Regression
+batch2::785145642,batch2,Jateng_Twit,1,1,0.6547490386914046,Combined Logistic Regression
+batch3::1608041882856349698,batch3,Berita_A1,1,1,0.6124519926556378,Combined Logistic Regression
+batch3::1617455387220787203,batch3,zwucce,1,1,0.5180355186453446,Combined Logistic Regression
+batch3::1629530059265703938,batch3,Srik4ndiMuslim2,1,1,0.9261716313790553,Combined Logistic Regression
+batch3::1766624984766853120,batch3,AuraKasih0872,1,1,0.5603007889864818,Combined Logistic Regression
+batch3::1766629692948590592,batch3,CSukhova61073,0,1,0.5577729895010496,Combined Logistic Regression
+batch3::1766640890226044928,batch3,dfn1432034,1,1,0.5240074534128197,Combined Logistic Regression
+batch3::1766659361970225152,batch3,bry213903767212,1,1,0.6088099130320412,Combined Logistic Regression
+batch3::1767693771767173120,batch3,CableQuantum,1,0,0.49675948098393236,Combined Logistic Regression
+batch3::1767695623950864384,batch3,dewa76812781826,0,1,0.6380552105542313,Combined Logistic Regression
+batch3::1767698437993287680,batch3,cableact,0,1,0.5862121922945799,Combined Logistic Regression
+batch3::1767703136062623744,batch3,troothar,0,1,0.574112465614051,Combined Logistic Regression
+batch3::1767720414434959360,batch3,syedbry64190,1,1,0.560105582983162,Combined Logistic Regression
+batch3::1767990587079405568,batch3,Joker514726,1,1,0.5168178644690803,Combined Logistic Regression
+batch3::1768203864808079360,batch3,adryanqyg2c,1,1,0.5542030922799729,Combined Logistic Regression
+batch3::1768226689761574913,batch3,dennyfebia50888,0,1,0.5853589605435526,Combined Logistic Regression
+batch3::1771681447688249344,batch3,godeedk45297,1,1,0.5471359101412927,Combined Logistic Regression
+batch3::1805815904909115395,batch3,radarhots,1,1,0.5168178644690803,Combined Logistic Regression
+batch3::181560855,batch3,wahyu_panda,0,0,0.45073029603808323,Combined Logistic Regression
+batch3::1822465751992963073,batch3,hotradars,1,1,0.5640354589670493,Combined Logistic Regression
+batch3::1825846769101754368,batch3,sayurku44194,1,1,0.7569983648425722,Combined Logistic Regression
+batch3::1863484917952516096,batch3,parjo4423939442,1,1,0.9958717278837191,Combined Logistic Regression
+batch3::1884178679766605829,batch3,Charism_Web3,0,1,0.8135607594147298,Combined Logistic Regression
+batch3::1884211186918666240,batch3,zetao1234,1,1,0.5063783215794824,Combined Logistic Regression
+batch3::1947889563013419009,batch3,Jogja434788,1,1,0.7212908678719692,Combined Logistic Regression
+batch3::2078659335471996928,batch3,infonewsgo,1,1,0.5770189684548768,Combined Logistic Regression
+batch3::2428845116,batch3,IndonesiaGelapp,1,0,0.24617114746019989,Combined Logistic Regression
+batch3::3527049614,batch3,didithardworker,1,1,0.6540737201384135,Combined Logistic Regression
+batch3::49935892,batch3,SheIsAStarseed,1,1,0.5413991486181653,Combined Logistic Regression
+batch3::68152093,batch3,Small12Forward,0,0,0.1930354442191065,Combined Logistic Regression
+batch3::780554097388687360,batch3,asboediono_id,1,1,0.5180967765434595,Combined Logistic Regression
+batch3::1226436091617505281,batch3,keuangannews_id,1,0,0.17689543925976725,Combined Logistic Regression
+batch3::1253343071070109709,batch3,devnindyasfh,0,0,0.035216446891553975,Combined Logistic Regression
+batch3::1344315723502342144,batch3,RTobazz,1,1,0.5890231146037321,Combined Logistic Regression
+batch3::1440201477675384835,batch3,remaerts,0,0,0.16821669305265216,Combined Logistic Regression
+batch3::1460190656182194177,batch3,LyliDeer183,0,0,0.28037345309709927,Combined Logistic Regression
+batch3::1466788849552539652,batch3,Lian1961To,1,1,0.6467820173220954,Combined Logistic Regression
+batch3::1556286745238708224,batch3,happy_43ver,0,0,0.21736093241693702,Combined Logistic Regression
+batch3::1584459166311018497,batch3,PMuchlik,1,1,0.7180315884538813,Combined Logistic Regression
+batch3::1603741074605760512,batch3,MujitoBewing,1,0,0.2516195728599331,Combined Logistic Regression
+batch3::1695437873187889152,batch3,annabaenaazol,0,0,0.03530075080669452,Combined Logistic Regression
+batch3::1745265761416056832,batch3,indepenSumatera,1,0,0.00289304811159931,Combined Logistic Regression
+batch3::191674288,batch3,6ilpam,0,1,0.6242614407185136,Combined Logistic Regression
+batch3::1931239562648653824,batch3,spearsparkles,0,0,0.10549184173278849,Combined Logistic Regression
+batch3::1982221716815478784,batch3,pacarmarklee217,0,0,0.26794116718131317,Combined Logistic Regression
+batch3::1994759633903493120,batch3,BennySiz,0,1,0.5873361982889934,Combined Logistic Regression
+batch3::2006572491263909888,batch3,HamidStore36610,0,0,0.00594651728047675,Combined Logistic Regression
+batch3::2084962212939251713,batch3,Lakeswara19,0,0,0.49350989891059704,Combined Logistic Regression
+batch3::2167602541,batch3,gugulalakuku,0,0,0.1366391417250043,Combined Logistic Regression
+batch3::2281270728,batch3,sonnyprakosa7,1,0,0.2147134420943803,Combined Logistic Regression
+batch3::736441309,batch3,RADEN_NUH_,0,0,0.17222090068213408,Combined Logistic Regression
+batch2::1089589044609044480,batch2,posrondart9,1,1,0.6977591590827352,Combined RF
+batch2::1048161416673341441,batch2,asaprosul,1,0,0.44045851750613396,Combined RF
+batch2::2004132912875307008,batch2,FITRI688212,1,1,0.8166207664619898,Combined RF
+batch2::1878777516296679424,batch2,mzk716524,1,1,0.6252595133332748,Combined RF
+batch2::1448884002186694658,batch2,bukan_fufufafa_,1,1,0.8828738786570646,Combined RF
+batch2::2051482579946336257,batch2,Up_informasi,1,1,0.9219688375137487,Combined RF
+batch2::1809710719644102656,batch2,Addaily11,1,1,0.8764545966330936,Combined RF
+batch2::1938137369255022592,batch2,jurnalkencan,0,1,0.7243702665506737,Combined RF
+batch2::797761417894051840,batch2,MarahIchsan,1,0,0.4642779867240126,Combined RF
+batch2::743782467262251008,batch2,dzikdzikdzik,0,0,0.4241344872658936,Combined RF
+batch2::2033062906628292608,batch2,EzeeDMeme,0,1,0.5208816102800338,Combined RF
+batch2::1868400477416951808,batch2,tukangberi,1,1,0.650478604965571,Combined RF
+batch2::1619497882842959872,batch2,hanhan2901,1,0,0.37511120494524164,Combined RF
+batch2::1537213103397830656,batch2,SemutMerah2024,0,0,0.22256283323448348,Combined RF
+batch2::1889344272685768704,batch2,RebutKedaulat4n,1,1,0.8762776994103111,Combined RF
+batch2::1015706575,batch2,troides_helenaa,0,0,0.17159384701220376,Combined RF
+batch2::620311523,batch2,deliknewscom,1,1,0.9016507875369242,Combined RF
+batch2::1599214818028040193,batch2,iHeartsRussell,0,0,0.4948064102192532,Combined RF
+batch2::1804826359929393152,batch2,anyingpukimak,0,1,0.5731531890524726,Combined RF
+batch2::1460812501369569286,batch2,seonggok_cerita,1,1,0.8673253027177779,Combined RF
+batch2::3172706335,batch2,lecleqrc,0,1,0.6286756027358416,Combined RF
+batch2::1512817025868959747,batch2,jangetes,1,0,0.34544093317682695,Combined RF
+batch2::154102750,batch2,Beritasatu,1,1,0.926476990266768,Combined RF
+batch2::753234181019176961,batch2,aegis00000,1,1,0.8907150324776798,Combined RF
+batch2::100174047,batch2,FathraNazrul,1,1,0.7957165317574764,Combined RF
+batch2::2076243671524286464,batch2,KicauGaruda0,1,1,0.8653280388942439,Combined RF
+batch2::1124919681637203969,batch2,lsupportevery1,0,0,0.06329792088407792,Combined RF
+batch2::1942886404356476929,batch2,PrabowoRai29151,0,0,0.11908821174086588,Combined RF
+batch2::1947683991462526977,batch2,Samkuro_,0,0,0.056872924092603215,Combined RF
+batch2::2041832395431694336,batch2,Kakarototea,0,0,0.13808113727380017,Combined RF
+batch2::1163042789275262976,batch2,rahdanim,0,0,0.06875245186690825,Combined RF
+batch2::116673112,batch2,rahmatsn,0,0,0.4061830918208204,Combined RF
+batch2::1201105341825421313,batch2,roticoklatkejuh,0,0,0.37494989595516454,Combined RF
+batch2::1309770940532678656,batch2,einschleimer29,0,0,0.4612855101268999,Combined RF
+batch2::1335162502678605824,batch2,gwencanayok,0,0,0.18197665347692465,Combined RF
+batch2::137548883,batch2,saintpooney,0,0,0.3973124326679701,Combined RF
+batch2::1437750326707191812,batch2,MiskinTV_,1,0,0.4819199447080958,Combined RF
+batch2::1514987320457383938,batch2,anti_443,0,0,0.41453339779943443,Combined RF
+batch2::1701157880,batch2,chocosundaerv,1,0,0.042600733947315325,Combined RF
+batch2::1802130557226356737,batch2,jejaknarasiid,1,1,0.5834242285039889,Combined RF
+batch2::1846772767188041728,batch2,labulabubuuu92,0,0,0.24134863569185383,Combined RF
+batch2::1849123922756952064,batch2,17817itadakimas,0,0,0.22123654890806663,Combined RF
+batch2::1868918299180027904,batch2,kittygwn,0,0,0.35649313934515003,Combined RF
+batch2::1870701646638137344,batch2,dsideofblue,0,0,0.16058540800800733,Combined RF
+batch2::2074070543847038977,batch2,leoferd97,0,0,0.26790885991535274,Combined RF
+batch2::2423499978,batch2,markhenryy_,0,0,0.12425926898127815,Combined RF
+batch2::271932146,batch2,dionysiusdion,0,0,0.3177900137271402,Combined RF
+batch2::48359478,batch2,Melihat_Indo,1,1,0.67252445209616,Combined RF
+batch2::586241670,batch2,sndygs,0,0,0.12016983032691449,Combined RF
+batch2::785145642,batch2,Jateng_Twit,1,1,0.622948046064884,Combined RF
+batch3::1608041882856349698,batch3,Berita_A1,1,1,0.8547332888533049,Combined RF
+batch3::1617455387220787203,batch3,zwucce,1,1,0.5682412998505598,Combined RF
+batch3::1629530059265703938,batch3,Srik4ndiMuslim2,1,1,0.6782586839522583,Combined RF
+batch3::1766624984766853120,batch3,AuraKasih0872,1,1,0.5667618455752974,Combined RF
+batch3::1766629692948590592,batch3,CSukhova61073,0,1,0.8460102720002138,Combined RF
+batch3::1766640890226044928,batch3,dfn1432034,1,1,0.6425280727772273,Combined RF
+batch3::1766659361970225152,batch3,bry213903767212,1,1,0.6813153510085534,Combined RF
+batch3::1767693771767173120,batch3,CableQuantum,1,1,0.6391027126668759,Combined RF
+batch3::1767695623950864384,batch3,dewa76812781826,0,1,0.83944329579788,Combined RF
+batch3::1767698437993287680,batch3,cableact,0,1,0.6443192382208461,Combined RF
+batch3::1767703136062623744,batch3,troothar,0,1,0.6981110982072362,Combined RF
+batch3::1767720414434959360,batch3,syedbry64190,1,1,0.7351134368583939,Combined RF
+batch3::1767990587079405568,batch3,Joker514726,1,1,0.6994537987704357,Combined RF
+batch3::1768203864808079360,batch3,adryanqyg2c,1,1,0.8620000835626405,Combined RF
+batch3::1768226689761574913,batch3,dennyfebia50888,0,1,0.6986057144191115,Combined RF
+batch3::1771681447688249344,batch3,godeedk45297,1,1,0.5894646267395816,Combined RF
+batch3::1805815904909115395,batch3,radarhots,1,1,0.6994537987704357,Combined RF
+batch3::181560855,batch3,wahyu_panda,0,1,0.8500542294686579,Combined RF
+batch3::1822465751992963073,batch3,hotradars,1,1,0.7228816570619998,Combined RF
+batch3::1825846769101754368,batch3,sayurku44194,1,0,0.32333068842174084,Combined RF
+batch3::1863484917952516096,batch3,parjo4423939442,1,1,0.7102253305042678,Combined RF
+batch3::1884178679766605829,batch3,Charism_Web3,0,1,0.7573651763900244,Combined RF
+batch3::1884211186918666240,batch3,zetao1234,1,1,0.6637316530470626,Combined RF
+batch3::1947889563013419009,batch3,Jogja434788,1,0,0.4127778967753843,Combined RF
+batch3::2078659335471996928,batch3,infonewsgo,1,1,0.6962544064611174,Combined RF
+batch3::2428845116,batch3,IndonesiaGelapp,1,0,0.46350626461951616,Combined RF
+batch3::3527049614,batch3,didithardworker,1,0,0.22355879511941945,Combined RF
+batch3::49935892,batch3,SheIsAStarseed,1,1,0.5139887464786902,Combined RF
+batch3::68152093,batch3,Small12Forward,0,0,0.21522758585430338,Combined RF
+batch3::780554097388687360,batch3,asboediono_id,1,1,0.5869659694504815,Combined RF
+batch3::1226436091617505281,batch3,keuangannews_id,1,0,0.3694771264151041,Combined RF
+batch3::1253343071070109709,batch3,devnindyasfh,0,0,0.0797049192421942,Combined RF
+batch3::1344315723502342144,batch3,RTobazz,1,1,0.6153371828162086,Combined RF
+batch3::1440201477675384835,batch3,remaerts,0,0,0.11003862338479017,Combined RF
+batch3::1460190656182194177,batch3,LyliDeer183,0,0,0.3249685436458598,Combined RF
+batch3::1466788849552539652,batch3,Lian1961To,1,0,0.3322459137906327,Combined RF
+batch3::1556286745238708224,batch3,happy_43ver,0,0,0.44185453531313507,Combined RF
+batch3::1584459166311018497,batch3,PMuchlik,1,1,0.7051283840193442,Combined RF
+batch3::1603741074605760512,batch3,MujitoBewing,1,0,0.2596524073860029,Combined RF
+batch3::1695437873187889152,batch3,annabaenaazol,0,0,0.0797049192421942,Combined RF
+batch3::1745265761416056832,batch3,indepenSumatera,1,1,0.5817113356657324,Combined RF
+batch3::191674288,batch3,6ilpam,0,1,0.520715683064526,Combined RF
+batch3::1931239562648653824,batch3,spearsparkles,0,1,0.5039266095878007,Combined RF
+batch3::1982221716815478784,batch3,pacarmarklee217,0,0,0.3368997535930258,Combined RF
+batch3::1994759633903493120,batch3,BennySiz,0,0,0.2956202471677299,Combined RF
+batch3::2006572491263909888,batch3,HamidStore36610,0,0,0.14513607492892044,Combined RF
+batch3::2084962212939251713,batch3,Lakeswara19,0,1,0.582359733705623,Combined RF
+batch3::2167602541,batch3,gugulalakuku,0,0,0.07910478955993601,Combined RF
+batch3::2281270728,batch3,sonnyprakosa7,1,1,0.614639985053642,Combined RF
+batch3::736441309,batch3,RADEN_NUH_,0,0,0.40442934535113845,Combined RF

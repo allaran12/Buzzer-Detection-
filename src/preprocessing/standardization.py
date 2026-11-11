@@ -1,12 +1,8 @@
 """
-Input : data/interim/cleaned_data.csv
-Output: data/processed/standardized_data.csv
-        data/processed/standardization_report.txt
-Install:
-    pip install pandas
-Run:
-    python src/preprocessing/standardization.py
-    python src/preprocessing/standardization.py --input data/interim/cleaned_data.csv
+Data Standardization for CoordinX (PRD Phase 1)
+Input : data/interim/{dataset}/{dataset}_cleaned.csv
+Output: data/processed/{dataset}/standardized_data.csv
+        data/processed/{dataset}/standardization_report.txt
 """
 from pathlib import Path
 import argparse
@@ -67,29 +63,31 @@ def standardize_dataset(df: pd.DataFrame):
     df = df.copy()
     report = {}
 
+    # PRD FR-04: ID wajib string murni tanpa scientific notation
     for col in ID_COLUMNS:
         if col in df.columns:
             df[col] = df[col].astype("string").str.strip()
             df[col] = df[col].replace("", pd.NA)
 
+    # PRD 7.5: Standardisasi waktu ke UTC
     for col in DATE_COLUMNS:
         if col in df.columns:
             parsed = pd.to_datetime(df[col], errors="coerce", utc=True)
             report[f"{col}_invalid_or_missing_after_parse"] = int(parsed.isna().sum())
             df[col] = parsed
 
+    # Standardisasi numerik (Int64 nullable)
     for col in NUMERIC_COLUMNS:
         if col in df.columns:
             numeric = pd.to_numeric(df[col], errors="coerce")
-            non_integer = numeric.notna() & (numeric % 1 != 0)
-            if non_integer.any():
-                report[f"{col}_non_integer_values"] = int(non_integer.sum())
             df[col] = numeric.round().astype("Int64")
 
+    # Standardisasi boolean
     for col in BOOLEAN_COLUMNS:
         if col in df.columns:
             df[col] = df[col].map(parse_bool).astype("boolean")
 
+    # PRD 7.4: Simpan teks rapi tanpa menghapus hashtag/mention/URL
     if "text" in df.columns:
         df["text"] = (
             df["text"].astype("string")
@@ -111,27 +109,21 @@ def standardize_dataset(df: pd.DataFrame):
         df["relation_type"].value_counts(dropna=False).to_dict()
         if "relation_type" in df.columns else {}
     )
-    report["retweet_rows"] = (
-        int(df["is_rt"].fillna(False).sum()) if "is_rt" in df.columns else "column_not_found"
-    )
     return df, report
 
 def main():
-    parser = argparse.ArgumentParser(description="Standardisasi dataset CoordinX")
-    parser.add_argument("--input", default="data/interim/cleaned_data.csv")
+    parser = argparse.ArgumentParser(description="Standardisasi dataset CoordinX (PRD Phase 1)")
+    parser.add_argument("--input", required=True, help="Path ke CSV cleaned interim")
     parser.add_argument("--output-dir", default="data/processed")
     args = parser.parse_args()
 
     input_path = Path(args.input)
     file_stem = input_path.stem.replace("_cleaned", "")
-    output_dir = Path("data/processed") / file_stem
+    output_dir = Path(args.output_dir) / file_stem
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not input_path.exists():
-        raise FileNotFoundError(
-            f"File tidak ditemukan: {input_path}\n"
-            "Jalankan cleaning.py terlebih dahulu."
-        )
+        raise FileNotFoundError(f"File tidak ditemukan: {input_path}")
 
     df = pd.read_csv(input_path, dtype="string", keep_default_na=True)
     standardized, report = standardize_dataset(df)
@@ -150,7 +142,7 @@ def main():
         "\n".join(lines), encoding="utf-8"
     )
     print("\n".join(lines))
-    print(f"\nOutput tersimpan di: {output_dir.resolve()}")
+    print(f"\n✓ Output tersimpan di: {output_dir.resolve()}")
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,2 @@
+dataset_id,account_id,username,label,prediction,probability_buzzer,positive_evidence,negative_evidence,error_type
+batch2,2033062906628292608,EzeeDMeme,0,1,0.752517425500051,numeric__url_rate (+1.621); numeric__avg_tags (+0.601); numeric__n_quotes (+0.399); numeric__n_originals (+0.244); numeric__graph_component_size (+0.125),numeric__burst_ratio_1h (-0.306); numeric__avg_body_len (-0.209); numeric__avg_words (-0.202); numeric__post_rate (-0.156); numeric__pagerank (-0.098),false_positive

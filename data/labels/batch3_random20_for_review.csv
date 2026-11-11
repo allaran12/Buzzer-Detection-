@@ -1,0 +1,21 @@
+account_id,username,n_posts,post_rate,avg_tags,avg_body_len,out_degree,follower_ratio,buzzer_score,label,evidence,review_status,candidate_type
+1226436091617505281,keuangannews_id,2,0.1,0.0,81.5,0,1.794,0.1482,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+1253343071070109709,devnindyasfh,1,10.0,0.0,33.0,0,0.773,0.4111,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1344315723502342144,RTobazz,2,0.08,0.0,139.0,2,0.911,0.4765,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+1440201477675384835,remaerts,1,10.0,0.0,62.0,1,0.031,0.5777,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1460190656182194177,LyliDeer183,1,10.0,0.0,249.0,1,0.285,0.6905,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1466788849552539652,Lian1961To,1,10.0,0.0,113.0,1,0.315,0.607,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+1556286745238708224,happy_43ver,1,10.0,0.0,154.0,1,0.365,0.6318,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1584459166311018497,PMuchlik,1,10.0,1.0,146.0,1,2141.0,0.6869,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+1603741074605760512,MujitoBewing,1,10.0,0.0,149.0,1,0.63,0.6269,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+1695437873187889152,annabaenaazol,1,10.0,0.0,34.0,0,0.387,0.4143,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1745265761416056832,indepenSumatera,1,10.0,0.0,263.0,0,3.39,0.5342,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+191674288,6ilpam,1,10.0,0.0,253.0,0,138.0,0.3784,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1931239562648653824,spearsparkles,1,10.0,0.0,269.0,0,2.571,0.5434,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1982221716815478784,pacarmarklee217,1,10.0,0.0,192.0,1,1.061,0.6503,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+1994759633903493120,BennySiz,1,10.0,0.0,36.0,1,0.32,0.5598,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+2006572491263909888,HamidStore36610,1,10.0,0.0,21.0,1,2.778,0.5341,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+2084962212939251713,Lakeswara19,2,0.19,0.0,50.0,0,0.924,0.1374,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+2167602541,gugulalakuku,1,10.0,0.0,20.0,1,0.644,0.5479,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline
+2281270728,sonnyprakosa7,2,0.13,0.0,228.5,2,0.96,0.5324,1,Pola kutipan teks berulang & out-degree tinggi,VERIFIED,Random20_Baseline
+736441309,RADEN_NUH_,1,10.0,0.0,81.0,0,25.298,0.275,0,Aktivitas mandiri & interaksi wajar,VERIFIED,Random20_Baseline

@@ -1,0 +1,10 @@
+COORDINX - CLEANING REPORT
+==============================
+rows_before: 1099
+rows_rejected_empty_text_or_missing_identity: 0
+duplicate_rows_removed_by_post_id: 18
+rows_after_cleaning: 1081
+unique_post_ids_after_cleaning: 1081
+unique_accounts_after_cleaning: 796
+relation_type_counts: {'reply': 621, 'original': 344, 'quote': 116}
+interactions_with_missing_target_account: 0

@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-11-10T05:51:17.441264+00:00",
+  "experiment": "batch3",
+  "batches": {
+    "batch3": {
+      "label_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/labels/batch3_labeled_canonical.csv",
+      "feature_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/features/batch3_account_features_with_scores.csv",
+      "post_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/data/features/batch3_posts_with_features.csv",
+      "invalid_target_account_ids": 0,
+      "interaction_rows": 737,
+      "labeled_accounts": 50,
+      "labeled_single_post_accounts": 40
+    }
+  },
+  "training_rows": 50,
+  "training_batches": [
+    "batch3"
+  ],
+  "labeled_single_post_accounts": 40,
+  "model_path": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/models/phase6_fusion_proxy_batch3_canonical.pkl"
+}

@@ -1,20 +1,28 @@
 """
-Input : data/raw/prayforkalimantan.csv
-Output: data/interim/cleaned_data.csv
-        data/interim/duplicate_posts.csv
-        data/interim/rejected_rows.csv
-        data/interim/cleaning_report.txt
-
-Install:
-    pip install pandas
-Run:
-    python src/preprocessing/cleaning.py
-    python src/preprocessing/cleaning.py --input data/raw/nama_file.csv
+Data Cleaning & Ingestion for CoordinX (PRD Phase 1)
+Input : data/raw/{dataset}.csv
+Output: data/interim/{dataset}/{dataset}_cleaned.csv
+        data/interim/{dataset}/{dataset}_duplicates.csv
+        data/interim/{dataset}/{dataset}_rejected.csv
+        data/interim/{dataset}/{dataset}_report.txt
 """
-
 from pathlib import Path
 import argparse
 import pandas as pd
+
+COLUMN_ALIASES = {
+    "id": "post_id",
+    "tweet_id": "post_id",
+    "user_id": "account_id",
+    "author_id": "account_id",
+    "created_at": "date",
+    "timestamp": "date",
+    "content": "text",
+    "tweet": "text",
+    "full_text": "text",
+    "screen_name": "username",
+    "user_name": "username",
+}
 
 REQUIRED_COLUMNS = [
     "post_id", "account_id", "date", "text", "username",
@@ -22,11 +30,30 @@ REQUIRED_COLUMNS = [
 ]
 
 def read_csv_safely(path: Path) -> pd.DataFrame:
+    # PRD FR-04: ID wajib dibaca sebagai string, bukan float
     return pd.read_csv(path, dtype="string", keep_default_na=True)
 
-def clean_dataset(df: pd.DataFrame):
-    df = df.copy()
+def apply_column_mapping(df: pd.DataFrame) -> pd.DataFrame:
+    # PRD FR-02: Column mapping untuk menangani variasi format scraper
+    mapping = {c: COLUMN_ALIASES[c] for c in df.columns if c in COLUMN_ALIASES and COLUMN_ALIASES[c] not in df.columns}
+    return df.rename(columns=mapping)
+
+def clean_dataset(df: pd.DataFrame, default_isu: str = "unknown"):
+    df = apply_column_mapping(df.copy())
     initial_rows = len(df)
+
+    # Fallback jika isu tidak ada di CSV
+    if "isu" not in df.columns:
+        df["isu"] = default_isu
+
+    # Fallback boolean relations jika kosong
+    for col in ["is_rt", "is_reply", "is_quote"]:
+        if col not in df.columns:
+            df[col] = "False"
+
+    # Fallback relation_type jika kosong
+    if "relation_type" not in df.columns:
+        df["relation_type"] = "original"
 
     missing_columns = [c for c in REQUIRED_COLUMNS if c not in df.columns]
     if missing_columns:
@@ -45,10 +72,18 @@ def clean_dataset(df: pd.DataFrame):
     rejected = df.loc[rejected_mask].copy()
     valid = df.loc[~rejected_mask].copy()
 
+    # PRD FR-05: Deduplikasi hanya berdasarkan post_id, jangan buang teks serupa
     duplicate_mask = valid.duplicated(subset=["post_id"], keep="first")
     duplicates = valid.loc[duplicate_mask].copy()
     cleaned = valid.loc[~duplicate_mask].copy()
-    
+
+    # PRD: Audit relasi (reply/quote yang kehilangan target)
+    replies_quotes = cleaned[cleaned["relation_type"].isin(["reply", "quote"])]
+    missing_target = (
+        replies_quotes["target_account_id"].isna().sum()
+        if "target_account_id" in replies_quotes else len(replies_quotes)
+    )
+
     report = {
         "rows_before": initial_rows,
         "rows_rejected_empty_text_or_missing_identity": len(rejected),
@@ -56,42 +91,39 @@ def clean_dataset(df: pd.DataFrame):
         "rows_after_cleaning": len(cleaned),
         "unique_post_ids_after_cleaning": cleaned["post_id"].nunique(dropna=True),
         "unique_accounts_after_cleaning": cleaned["account_id"].nunique(dropna=True),
-        "missing_bio_after_cleaning": int(cleaned["bio"].isna().sum()) if "bio" in cleaned else "column_not_found",
         "relation_type_counts": cleaned["relation_type"].value_counts(dropna=False).to_dict(),
+        "interactions_with_missing_target_account": int(missing_target),
     }
     return cleaned, duplicates, rejected, report
 
 def main():
-    parser = argparse.ArgumentParser(description="Cleaning dataset CoordinX")
-    parser.add_argument("--input", default="data/raw/wowo2.csv")
+    parser = argparse.ArgumentParser(description="Cleaning & Ingestion CoordinX (PRD Phase 1)")
+    parser.add_argument("--input", required=True, help="Path ke CSV raw")
     parser.add_argument("--output-dir", default="data/interim")
     args = parser.parse_args()
 
     input_path = Path(args.input)
     file_stem = input_path.stem
-    output_dir = Path("data/interim") / file_stem
+    output_dir = Path(args.output_dir) / file_stem
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if not input_path.exists():
-        raise FileNotFoundError(
-            f"File tidak ditemukan: {input_path}\n"
-            "Letakkan CSV mentah di data/raw/ atau gunakan --input."
-        )
+        raise FileNotFoundError(f"File tidak ditemukan: {input_path}")
 
     raw = read_csv_safely(input_path)
-    cleaned, duplicates, rejected, report = clean_dataset(raw)
+    cleaned, duplicates, rejected, report = clean_dataset(raw, default_isu=file_stem)
 
     cleaned.to_csv(output_dir / f"{file_stem}_cleaned.csv", index=False, encoding="utf-8-sig")
     duplicates.to_csv(output_dir / f"{file_stem}_duplicates.csv", index=False, encoding="utf-8-sig")
     rejected.to_csv(output_dir / f"{file_stem}_rejected.csv", index=False, encoding="utf-8-sig")
 
-    lines = ["COORDINX - DATA CLEANING REPORT", "=" * 36]
+    lines = ["COORDINX - DATA CLEANING & AUDIT REPORT", "=" * 40]
     for key, value in report.items():
         lines.append(f"{key}: {value}")
     (output_dir / f"{file_stem}_report.txt").write_text("\n".join(lines), encoding="utf-8")
 
     print("\n".join(lines))
-    print(f"\nOutput tersimpan di: {output_dir.resolve()}")
+    print(f"\n✓ Output tersimpan di: {output_dir.resolve()}")
 
 if __name__ == "__main__":
     main()

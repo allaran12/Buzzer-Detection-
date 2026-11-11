@@ -1,0 +1,18 @@
+{
+  "status": "PASSED",
+  "rows": 1803,
+  "batches": {
+    "batch2": 1007,
+    "batch3": 796
+  },
+  "predicted_buzzer": 440,
+  "review_required": 291,
+  "priority_review": 328,
+  "artifacts": {
+    "predictions": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_predictions.csv",
+    "priority_review": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_priority_review.csv",
+    "score_distribution": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_coordination_score_distribution.png",
+    "readiness": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/output/phase7/phase7_readiness.json",
+    "report": "/home/andry-alfisi/Project/Project/Buzzer-Detection-/reports/PHASE7_INFERENCE_EXPLAINABILITY_REPORT.md"
+  }
+}

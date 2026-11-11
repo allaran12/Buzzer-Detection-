@@ -1,0 +1,74 @@
+{
+  "status": "READY_FOR_DATA_COLLECTION_AND_ALGORITHM_IMPLEMENTATION",
+  "python_version": "3.13.9",
+  "dependencies": {
+    "torch": true,
+    "transformers": true,
+    "torch_geometric": true,
+    "accelerate": true,
+    "sentencepiece": true,
+    "safetensors": true
+  },
+  "current": {
+    "labeled_accounts": 100,
+    "organic_labels": 48,
+    "buzzer_labels": 52,
+    "labeled_multi_post": 20,
+    "valid_edges": 1365
+  },
+  "targets": {
+    "minimum_prototype": {
+      "labeled_accounts": 300,
+      "organic_labels": 150,
+      "buzzer_labels": 150,
+      "labeled_multi_post": 100,
+      "valid_edges": 1500
+    },
+    "recommended_stable": {
+      "labeled_accounts": 600,
+      "organic_labels": 300,
+      "buzzer_labels": 300,
+      "labeled_multi_post": 200,
+      "valid_edges": 3000
+    }
+  },
+  "model_features": [
+    "avg_tags",
+    "avg_body_len",
+    "url_rate",
+    "avg_words",
+    "n_posts",
+    "active_hours",
+    "post_rate",
+    "n_replies",
+    "n_quotes",
+    "n_originals",
+    "in_degree",
+    "out_degree",
+    "total_degree",
+    "pagerank",
+    "component_size",
+    "sequence_len",
+    "mean_interval_hours",
+    "std_interval_hours",
+    "min_interval_hours",
+    "max_interval_hours",
+    "burst_ratio_1h",
+    "active_span_hours_observed",
+    "active_days_observed",
+    "hour_entropy",
+    "graph_in_degree",
+    "graph_out_degree",
+    "graph_unique_targets",
+    "graph_unique_sources",
+    "graph_pagerank",
+    "graph_component_size"
+  ],
+  "constraints": [
+    "Do not modify data/raw.",
+    "Do not use buzzer_score as a feature or ground truth.",
+    "Keep account_id, post_id, and edge IDs as strings.",
+    "Keep labels balanced by issue and include multi-post labeled accounts.",
+    "Use group, temporal, and cross-issue evaluation."
+  ]
+}

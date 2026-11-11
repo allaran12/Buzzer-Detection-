@@ -1,0 +1,11 @@
+# PyTorch CPU wheels; use the CUDA-specific index only when a compatible GPU environment is available.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.15.0+cpu
+transformers==5.22.2
+torch-geometric==2.8.1
+accelerate==1.15.0
+sentencepiece==0.2.3
+safetensors==0.8.0
+tokenizers==0.23.3
+xxhash==4.1.0
