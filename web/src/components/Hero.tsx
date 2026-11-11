@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  ShieldAlert,
   Loader2,
   RefreshCw,
   Search,
@@ -11,10 +11,10 @@ import {
   Smile,
   Users,
   Link as LinkIcon,
-  Sparkles,
 } from "lucide-react";
 import HeroNetworkPreview from "./HeroNetworkPreview";
 import { BuzzerAccount } from "@/types/buzzer";
+import logo from "@/app/LOGO WEB.png";
 
 type ResultTab = "visualisasi" | "frasa" | "sentimen" | "kluster";
 
@@ -73,13 +73,11 @@ export default function Hero() {
 
     setLoading(true);
     try {
-      // Fixed depth to 500 samples & mode to deep
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           query: targetUrl,
-          depth: 500,
           mode: "deep",
         }),
       });
@@ -146,15 +144,8 @@ export default function Hero() {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center text-center max-w-2xl mx-auto space-y-4"
         >
-          {/* Logo badge with ShieldAlert */}
-          <div className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 p-3 text-white shadow-lg shadow-blue-500/25">
-            <ShieldAlert size={32} />
-          </div>
-
           <div className="space-y-2">
-            <span className="eyebrow inline-block">
-              Sistem Intelijen Media Sosial
-            </span>
+
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-[var(--foreground)]">
               NEXANTARA
             </h1>
@@ -179,15 +170,9 @@ export default function Hero() {
                 <LinkIcon size={18} className="text-[var(--primary)]" />
                 Analisis Tautan Postingan
               </h2>
-              <p className="text-xs md:text-sm text-[var(--muted-foreground)] mt-0.5">
-                Sistem memeriksa reply, mention, dan narasi di sekitar URL target
-              </p>
+
             </div>
 
-            <div className="inline-flex items-center gap-1.5 self-start sm:self-auto rounded-full bg-[var(--card-subtle)] border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--muted-foreground)]">
-              <Sparkles size={12} className="text-[var(--primary)]" />
-              Sampel: 500 Cuitan
-            </div>
           </div>
 
           {/* Form: Single URL Link Input */}
@@ -204,23 +189,6 @@ export default function Hero() {
                   placeholder="https://x.com/username/status/18892019482..."
                   className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] px-4 py-3 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-all font-mono"
                 />
-              </div>
-
-              {/* Preset Quick Links */}
-              <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
-                <span className="text-[11px] font-medium text-[var(--muted-foreground)] mr-1">
-                  Coba tautan contoh:
-                </span>
-                {SAMPLE_PRESETS.map((preset) => (
-                  <button
-                    key={preset.label}
-                    type="button"
-                    onClick={() => setUrlInput(preset.url)}
-                    className="rounded-lg border border-[var(--border)] bg-[var(--card-subtle)] px-2.5 py-1 text-xs text-[var(--foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-all cursor-pointer font-medium"
-                  >
-                    {preset.label}
-                  </button>
-                ))}
               </div>
             </div>
 
@@ -240,12 +208,12 @@ export default function Hero() {
                 {loading ? (
                   <>
                     <Loader2 size={16} className="animate-spin" />
-                    Sedang Menganalisis 500 Cuitan...
+                    Sedang Menganalisis...
                   </>
                 ) : (
                   <>
                     <Search size={16} />
-                    Analisis URL Postingan
+                    Analisis Tautan
                   </>
                 )}
               </button>
@@ -352,7 +320,7 @@ export default function Hero() {
                         Sampel Terpindai
                       </span>
                       <p className="text-2xl tabular-score text-[var(--primary)] mt-1">
-                        500 Cuitan
+                        Data Postingan
                       </p>
                     </div>
                   </div>
@@ -401,7 +369,7 @@ export default function Hero() {
               {activeResultTab === "sentimen" && (
                 <div className="space-y-5 pt-2">
                   <p className="text-xs text-[var(--muted-foreground)]">
-                    Distribusi sentimen pada 500 komentar cuitan. Anomali terdeteksi jika polarisasi negatif/positif seragam ekstrem:
+                    Distribusi sentimen pada data postingan. Anomali terdeteksi jika polarisasi negatif/positif seragam ekstrem:
                   </p>
                   <div className="space-y-3">
                     <div>

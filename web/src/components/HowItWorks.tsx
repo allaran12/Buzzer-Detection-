@@ -12,10 +12,10 @@ const STEPS = [
     Icon: Link2,
   },
   {
-    num: "2. Ekstraksi 500 Sampel",
+    num: "2. Pengambilan Data",
     title: "Pengambilan Data Otomatis",
     description:
-      "Sistem secara otomatis mengumpulkan hingga 500 cuitan di sekitar tautan tersebut, mencakup reply, mention, dan interaksi temporal.",
+      "Sistem mengambil data publik yang relevan dari tautan postingan untuk dianalisis oleh mesin deteksi.",
     Icon: Cpu,
   },
   {

@@ -1,5 +1,5 @@
-import React from "react";
-import { ShieldAlert } from "lucide-react";
+import Image from "next/image";
+import logo from "@/app/fix logo web.png";
 
 const FOOTER_LINKS = [
   { label: "Analisis", href: "#analisis" },
@@ -16,11 +16,8 @@ export default function Footer() {
   return (
     <footer className="border-t border-[var(--border)] bg-white dark:bg-[var(--card)] py-10 text-center text-xs text-[var(--muted-foreground)] transition-colors duration-200">
       <div className="mx-auto max-w-screen-lg px-4 flex flex-col sm:flex-row items-center justify-between gap-5">
-        {/* Brand */}
         <div className="flex items-center gap-2.5 font-extrabold text-base text-[var(--foreground)] tracking-tight">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm">
-            <ShieldAlert size={16} />
-          </div>
+          <Image src={logo} alt="NEXANTARA" width={36} height={36} className="h-8 w-8 object-contain" />
           <span>NEXANTARA</span>
         </div>
 
