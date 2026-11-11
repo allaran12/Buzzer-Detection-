@@ -1,25 +1,66 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap");
 
-@layer base {
-  body {
-    background-color: #020617; /* slate-950 */
-    color: #f8fafc; /* slate-50 */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  }
+:root {
+  --background: hsl(210, 22%, 98%);
+  --foreground: hsl(220, 30%, 14%);
+  --primary: hsl(222, 84%, 48%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --muted-foreground: hsl(220, 8%, 46%);
+  --border: hsl(212, 18%, 89%);
+  --card: hsl(210, 26%, 95%);
+  --accent-go: hsl(150, 58%, 40%);
+  --accent-warn: hsl(32, 90%, 52%);
+  --accent-danger: hsl(350, 84%, 54%);
 }
 
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  line-height: 1.7;
 }
-::-webkit-scrollbar-track {
-  background: #090d16;
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Plus Jakarta Sans", sans-serif;
 }
-::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 4px;
+
+h1 {
+  font-size: clamp(36px, 4.6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+
+h2 {
+  font-size: clamp(30px, 3vw, 42px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
+
+h3 {
+  font-size: clamp(18px, 2vw, 21px);
+  font-weight: 700;
+}
+
+.eyebrow {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.tabular-score {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground); }

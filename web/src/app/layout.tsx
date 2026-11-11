@@ -3,17 +3,13 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "CoordinX — AI Buzzer & Coordinated Behavior Detection",
-  description: "AI-Powered Coordinated Inauthentic Behavior & Buzzer Network Detection System for Social Cyber Intelligence",
+  description: "Open-methodology buzzer & coordinated behavior analysis for X (Twitter). Semantic similarity, posting burst synchrony, and interaction graphs laid out transparently.",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className="h-full dark">
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white font-sans">
+    <html lang="id" className="h-full scroll-smooth">
+      <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)] antialiased">
         {children}
       </body>
     </html>
