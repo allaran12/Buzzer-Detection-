@@ -1,12 +1,13 @@
 # PRODUCT REQUIREMENTS DOCUMENT (PRD)
 # CoordinX — Social Media Coordination Detection System
 
-**Document Version:** 1.0  
-**Project Status:** Research & Development / Prototype  
+**Document Version:** 2.0
+**Project Status:** Research-Final Model Ready; Web Integration Pending
 **Platform Target:** X (formerly Twitter)  
 **Primary Language:** Indonesian  
 **Development Environment:** Python, Google Colab, GitHub  
 **AI Coding Agent:** OpenAI Codex
+**Last Updated:** November 11, 2026
 
 ---
 
@@ -1126,3 +1127,310 @@ CoordinX harus menjadi sistem analisis yang dapat:
 > CoordinX detects patterns and evidence of potential coordinated inauthentic behavior. It does not automatically determine the identity, affiliation, motive, or funding of an account.
 
 Fokus pengembangan adalah menghasilkan sistem yang dapat dipertanggungjawabkan secara teknis dan metodologis, bukan sekadar mendapatkan angka akurasi tinggi.
+
+---
+
+# 20. Final Implementation Specification (Pre-Web Integration)
+
+Bagian ini menjadi acuan implementasi terbaru setelah Phase 0-7. Bagian ini tidak mengubah definisi bahwa CoordinX hanya mendeteksi pola dan bukti; sistem tidak memberikan vonis hukum, identitas afiliasi, motif, atau sumber pendanaan akun.
+
+## 20.1 Status Gate
+
+| Gate | Status | Bukti utama |
+|---|---|---|
+| Repository audit dan struktur | Selesai | `reports/REPOSITORY_AUDIT.md` |
+| Cleaning dan standardisasi | Selesai | `src/preprocessing/cleaning.py`, `src/preprocessing/standardization.py` |
+| EDA dan overlap audit | Selesai | `notebooks/EDA.ipynb`, `reports/EDA_REPORT.md` |
+| Canonical text/temporal/graph features | Selesai | `src/features/canonical_features.py`, `data/features/` |
+| Manual annotation Batch 2-5 | Selesai untuk 200 akun | `data/labels/batch*_labeled_canonical.csv` |
+| Supplemental Organic screening | Selesai, weak label | `notebooks/08a_organic_account_screening.ipynb` |
+| Three-branch final training | Selesai setelah full notebook run | `notebooks/08b_final_model_training.ipynb` |
+| Inference contract dan explainability | Selesai | `src/inference/final_model_inference.py`, `output/final_model/` |
+| Integrasi model dengan `/web` | **Belum dimulai** | Menjadi phase terakhir setelah approval |
+
+## 20.2 Dataset dan Label Final
+
+Dataset independent yang dipakai untuk model final:
+
+- Batch 2: `wowo2`.
+- Batch 3: `RoySuryo`.
+- Batch 4: `ManfaatnyaDirasakan`.
+- Batch 5: `rasanyaman`.
+
+Batch 6 `misi18tokped` tidak dipakai sebagai issue independent karena overlap hampir penuh dengan Batch 4. Memasukkannya sebagai issue baru akan membuat evaluasi terlihat lebih besar tanpa menambah variasi informasi yang independen.
+
+Raw dataset tidak ditimpa. Label manual juga tidak diubah. Sebagai tambahan, sistem membuat **weak Organic labels** di `data/labels/final_organic_screened.csv` dengan aturan konservatif:
+
+1. Akun belum memiliki manual label.
+2. Memiliki minimal dua post sehingga perilaku tidak dinilai dari satu observasi.
+3. Tidak memiliki peer dengan text similarity minimal 0,60.
+4. Similarity maksimum lintas akun di bawah 0,60.
+5. Burst ratio satu jam maksimal 0,50.
+6. Aktivitas tersebar minimal satu jam atau dua hari kalender.
+7. Rasio teks unik minimal 0,75.
+8. Hanya Batch 2-3 yang boleh menerima weak Organic otomatis; Batch 4-5 didominasi template sehingga tetap `UNKNOWN` bila belum ada label manual.
+
+Weak label memakai `sample_weight=0.35` pada training dan **tidak dihitung sebagai gold ground truth** pada evaluasi. Seluruh keputusan screening dicatat di `data/labels/final_organic_screening_audit.csv`.
+
+## 20.3 Output Model yang Ditampilkan ke User
+
+Output utama per akun berada di `output/final_model/final_predictions.csv`. Kolom yang disiapkan untuk API/web:
+
+| Field | Fungsi |
+|---|---|
+| `account_id`, `username` | Identitas akun dan konteks isu |
+| `dataset_id`, `issue_id` | Provenance batch dan isu |
+| `prediction` | `Buzzer`, `Organic`, atau `Review` |
+| `coordination_score` | Skor indikasi 0-100, bukan probabilitas hukum |
+| `probability_buzzer` | Probabilitas gabungan tiga branch |
+| `confidence` | Jarak ternormalisasi dari ambang 0,50 |
+| `risk_level` | `high`, `medium`, atau `low` |
+| `indobertweet_probability` | Sinyal branch teks |
+| `temporal_lstm_probability` | Sinyal branch waktu |
+| `graphsage_probability` | Sinyal branch graph |
+| `explanation` | Ringkasan evidence yang dapat dibaca |
+| `sample_posts` | Maksimal tiga contoh post untuk inspeksi |
+| `review_status` | `MODEL_OUTPUT` atau `REVIEW_REQUIRED` |
+| `model_version`, `schema_version` | Reproducibility dan kompatibilitas API |
+
+Tampilan web yang direncanakan:
+
+1. Ringkasan jumlah akun dianalisis.
+2. Distribusi Buzzer, Organic, dan Review.
+3. Ranking akun dengan `coordination_score` tertinggi.
+4. Detail akun, tiga skor branch, confidence, dan risk level.
+5. Evidence teks, temporal, graph, dan sample post.
+6. Review queue untuk akun dengan probabilitas 0,35-0,65.
+7. Peringatan bahwa output adalah indikasi berbasis data, bukan vonis.
+
+## 20.4 Arsitektur Sistem
+
+![CoordinX system architecture](docs/diagrams/coordinx-system-architecture.svg)
+
+Editable source: `docs/diagrams/coordinx-system-architecture.drawio`.
+
+Alur komponen:
+
+```text
+Raw CSV/X data
+  -> cleaning + standardization
+  -> canonical post/account/interaction features
+  -> IndoBERTweet + Temporal LSTM + GraphSAGE
+  -> weighted fusion + threshold/review routing
+  -> prediction contract + evidence
+  -> future API/web integration
+```
+
+## 20.5 Workflow Pengembangan dan Data
+
+![CoordinX data workflow](docs/diagrams/coordinx-data-workflow.svg)
+
+Editable source: `docs/diagrams/coordinx-data-workflow.drawio`.
+
+Workflow menggunakan prinsip Waterfall: setiap tahap memiliki input, output, validasi, dan gate sebelum tahap berikutnya. Eksperimen boleh diulang di dalam tahap, tetapi integrasi web tidak boleh melewati gate model dan evaluasi.
+
+## 20.6 Flowchart Keputusan Model
+
+![CoordinX final decision flow](docs/diagrams/coordinx-final-decision-flow.svg)
+
+Editable source: `docs/diagrams/coordinx-final-decision-flow.drawio`.
+
+Aturan routing:
+
+- `p >= 0.65`: `Buzzer`, `high risk`.
+- `p <= 0.35`: `Organic`, `low risk`.
+- `0.35 < p < 0.65`: `Review`, `medium risk`, masuk human-review queue.
+
+Ambang ini adalah policy operasional dan harus dikalibrasi ulang ketika data gold bertambah.
+
+# 21. Technology Stack
+
+## 21.1 Data and Preprocessing
+
+- Python 3.13.
+- pandas untuk tabular processing.
+- NumPy untuk operasi numerik.
+- NetworkX untuk validasi dan fitur graph canonical.
+- Jupyter Notebook untuk pipeline yang dapat diaudit per-cell.
+- CSV UTF-8 dengan ID dibaca sebagai string.
+
+## 21.2 Modeling
+
+- PyTorch 2.15 CPU untuk neural models.
+- Transformers 5.22.2 untuk `indolem/indobertweet-base-uncased`.
+- scikit-learn untuk Logistic Regression, preprocessing, split, dan metrics.
+- PyTorch Geometric 2.8.1 untuk `SAGEConv`.
+- Matplotlib dan seaborn untuk confusion matrix, score distribution, dan perbandingan model.
+
+## 21.3 Engineering and Documentation
+
+- Git untuk versioning.
+- `pytest`/assert-based regression checks untuk validasi pipeline.
+- Draw.io untuk diagram editable.
+- `/web` disiapkan sebagai target integrasi terakhir; source web tidak diubah dalam gate ini.
+
+# 22. Model Methodology
+
+## 22.1 IndoBERTweet Branch
+
+Teks post diproses dengan encoder IndoBERTweet frozen. Untuk setiap post, hidden states dipool menggunakan mean pooling berbobot attention mask. Embedding beberapa post akun dirata-ratakan pada level akun, kemudian diklasifikasikan oleh Logistic Regression berbobot.
+
+Tujuan branch ini adalah menangkap representasi semantik, gaya bahasa, template, dan kemiripan narasi. Kehadiran kata politik, hashtag, atau opini tertentu tidak boleh menjadi bukti tunggal koordinasi.
+
+## 22.2 Temporal LSTM Branch
+
+Post akun diurutkan berdasarkan timestamp. Setiap timestep berisi:
+
+- jumlah hashtag;
+- panjang body;
+- indikator URL;
+- indikator reply dan quote;
+- log interval waktu antar-post;
+- sin/cos jam aktivitas.
+
+LSTM membaca urutan tersebut dan menghasilkan probabilitas buzzer. Akun satu-post tetap dapat diproses, tetapi tidak cukup untuk membuktikan pola temporal; karena itu confidence dan review tetap penting.
+
+## 22.3 GraphSAGE Branch
+
+Node graph adalah akun canonical. Edge diarahkan dari source account ke target account untuk reply/quote yang valid. Reverse edge hanya ditambahkan untuk message passing. Node yang belum berlabel dapat dipakai sebagai konteks graph, tetapi loss hanya dihitung pada node berlabel training.
+
+GraphSAGE menghasilkan embedding node melalui agregasi neighborhood dan klasifikasi node. Graph signal tidak boleh ditafsirkan sebagai hubungan organisasi atau afiliasi tanpa evidence tambahan.
+
+## 22.4 Fusion
+
+Probabilitas final menggunakan weighted late fusion:
+
+```text
+p_final = 0.40 p_text + 0.30 p_temporal + 0.30 p_graph
+coordination_score = 100 * p_final
+confidence = 2 * |p_final - 0.50|
+```
+
+Fusion dievaluasi pada gold holdout. Prediksi in-sample tidak dipakai untuk mengklaim performa.
+
+# 23. Mathematical Formulas
+
+## 23.1 Text Similarity
+
+Untuk dua representasi vektor teks `x` dan `y`, cosine similarity:
+
+```text
+sim(x, y) = (x . y) / (||x|| ||y||)
+```
+
+Similarity digunakan sebagai evidence kandidat/template, bukan label otomatis tunggal.
+
+## 23.2 Post Rate and Burst
+
+```text
+post_rate = n_posts / max(active_span_hours, epsilon)
+burst_ratio_1h = count(interval_hours <= 1) / max(n_intervals, 1)
+```
+
+Nilai default untuk akun satu-post tidak boleh dianggap sebagai aktivitas burst yang teramati.
+
+## 23.3 Temporal Entropy
+
+Dengan `p_h` sebagai proporsi aktivitas pada jam `h`:
+
+```text
+H(hour) = -sum_h p_h log2(p_h)
+```
+
+Entropy yang rendah berarti aktivitas terkonsentrasi pada sedikit jam, tetapi bukan bukti koordinasi tanpa sinyal lain.
+
+## 23.4 Graph Metrics
+
+```text
+in_degree(v)  = jumlah edge masuk ke v
+out_degree(v) = jumlah edge keluar dari v
+total_degree(v) = in_degree(v) + out_degree(v)
+```
+
+PageRank digunakan sebagai ukuran struktural tambahan dan component size digunakan untuk konteks kelompok. Keduanya tidak menyatakan hubungan sebab-akibat.
+
+## 23.5 Classification Metrics
+
+```text
+precision = TP / (TP + FP)
+recall    = TP / (TP + FN)
+f1        = 2 * precision * recall / (precision + recall)
+accuracy  = (TP + TN) / (TP + TN + FP + FN)
+```
+
+ROC-AUC dan PR-AUC dipakai ketika gold holdout memiliki dua kelas. PR-AUC lebih informatif ketika distribusi kelas tidak seimbang.
+
+# 24. Evaluation and Validation Policy
+
+## 24.1 Gold-Only Evaluation
+
+- Gold labels adalah label manual Batch 2-5.
+- Weak Organic tidak boleh masuk test metric sebagai kebenaran.
+- Split dilakukan pada level account key (`dataset_id:account_id`) untuk menghindari kebocoran akun.
+- Confusion matrix, precision, recall, F1, ROC-AUC, dan PR-AUC disimpan sebagai CSV/PNG.
+
+## 24.2 Required Gates Before Web Integration
+
+1. Full notebook `08a_organic_account_screening.ipynb` berjalan tanpa error.
+2. Full notebook `08b_final_model_training.ipynb` berjalan tanpa error.
+3. Checkpoint tiga model dapat dibaca kembali.
+4. `final_predictions.csv` memenuhi output contract dan tidak memiliki duplicate `(dataset_id, account_id)`.
+5. Semua confusion matrix dan metrics tersedia.
+6. Gold holdout metrics tercatat dalam readiness report.
+7. Regression tests Phase 1-7 tetap lulus.
+8. Tidak ada perubahan pada `data/raw/*`.
+9. Review queue dapat dibaca melalui `src/inference/final_model_inference.py`.
+10. User memberikan persetujuan eksplisit untuk mulai mengubah `/web`.
+
+# 25. Waterfall Methodology
+
+| Waterfall stage | CoordinX activity | Deliverable |
+|---|---|---|
+| Requirements | Problem, output user, non-goals, safety | PRD dan acceptance criteria |
+| System design | Schema, architecture, workflow, model branches | Diagram dan data architecture |
+| Implementation | Cleaning, features, labels, three models | Source modules dan notebooks |
+| Verification | Unit/regression, notebook Run All, gold evaluation | Metrics, matrices, readiness |
+| Deployment preparation | Model artifact, output contract, review queue | `models/final/`, `output/final_model/` |
+| Deployment | API/web adapter | **Phase terakhir; belum dimulai** |
+| Maintenance | Retraining, drift, label review, versioning | Roadmap pasca-integrasi |
+
+Waterfall dipakai untuk gate dan baseline dokumentasi. Eksperimen internal tetap dapat dilakukan secara iteratif tanpa mengubah acceptance criteria atau mencampur data test ke training.
+
+# 26. Final Artifact Contract
+
+## 26.1 Model Artifacts
+
+- `models/final/indobertweet_final.pkl`
+- `models/final/temporal_lstm_final.pt`
+- `models/final/graphsage_final.pt`
+- `output/final_model/indobertweet_account_embeddings.npz`
+- `output/final_model/*_training_history.csv`
+
+## 26.2 Evaluation Artifacts
+
+- `output/final_model/final_gold_holdout_metrics.csv`
+- `output/final_model/final_gold_holdout_metrics.png`
+- `output/final_model/indobertweet_confusion_matrix.png`
+- `output/final_model/temporal_lstm_confusion_matrix.png`
+- `output/final_model/graphsage_confusion_matrix.png`
+- `output/final_model/fusion_confusion_matrix.png`
+
+## 26.3 Inference Artifacts
+
+- `output/final_model/final_predictions.csv`
+- `output/final_model/final_review_queue.csv`
+- `output/final_model/final_readiness.json`
+- `reports/FINAL_MODEL_READINESS_REPORT.md`
+- `src/inference/final_model_inference.py`
+
+# 27. Phase Boundary
+
+Phase model final dan pre-integration dianggap selesai hanya jika seluruh validation gate pada Section 24 lulus. Setelah itu, Codex harus melaporkan status dan menunggu persetujuan untuk:
+
+1. membuat adapter backend/API;
+2. mengganti fallback model pada `/web`;
+3. menambahkan endpoint analisis dan detail akun;
+4. menguji UI, error state, dan human-review presentation;
+5. menjalankan integrasi end-to-end.
+
+Sebelum persetujuan tersebut, `/web` tidak boleh diubah.
