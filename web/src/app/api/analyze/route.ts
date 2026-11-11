@@ -112,7 +112,7 @@ export async function POST(request: Request) {
       analyzedPostsCount: 48,
       timestamp,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Gagal memproses permintaan analisis" },
       { status: 500 }
