@@ -11,6 +11,10 @@ export interface TweetSample {
   targetPostId?: string | null;
   duplicateSimilarity?: number;
   burstEvent?: boolean;
+  sentiment?: {
+    label: "positive" | "negative" | "neutral" | "mixed";
+    score: number;
+  };
 }
 
 export interface SuspiciousIndicator {
@@ -58,6 +62,15 @@ export interface BuzzerAccount {
   prediction?: string;
   reviewStatus?: string;
   branchScores?: Record<string, number>;
+  sentiment?: {
+    label: "positive" | "negative" | "neutral" | "mixed";
+    score: number;
+    counts: Record<string, number>;
+    posts: number;
+  };
+  inDegree?: number;
+  totalDegree?: number;
+  componentSize?: number;
 }
 
 export interface DashboardSummary {

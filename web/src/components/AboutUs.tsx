@@ -46,13 +46,12 @@ export default function AboutUs() {
     >
       <div className="mx-auto max-w-screen-lg px-4 md:px-6">
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-2xl mx-auto mb-14"
         >
-          <span className="eyebrow inline-block">KEUNGGULAN SISTEM</span>
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--foreground)] mt-1.5">
             Tentang NEXANTARA
           </h2>
@@ -67,7 +66,7 @@ export default function AboutUs() {
             return (
               <motion.div
                 key={feat.title}
-                initial={{ opacity: 0, y: 25 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-20px" }}
                 transition={{

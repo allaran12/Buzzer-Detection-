@@ -43,9 +43,9 @@ export async function POST(request: Request) {
       ? {
           query,
           model_experiment: body.modelExperiment,
-          limit: body.limit || 25,
-          fetch_replies: body.fetchReplies ?? true,
-          days: body.days || 30,
+          limit: body.limit || 500,
+          fetch_replies: body.fetchReplies === true,
+          days: typeof body.days === "number" ? body.days : null,
         }
       : {
           dataset_path: datasetPath,
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     const response = await fetch(`${target}/api/v1/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(120000),
+      signal: AbortSignal.timeout(270000),
       body: JSON.stringify(payload),
       cache: "no-store",
     });
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ...data, newAccounts: data.accounts || [] });
   } catch (error) {
     const message = error instanceof DOMException && error.name === "TimeoutError"
-      ? "Inference timeout: proses scraping melebihi 120 detik"
+      ? "Inference timeout: proses scraping dan analisis melewati batas waktu"
       : "Gagal menghubungi inference backend";
     return NextResponse.json({ source: "error", error: message }, { status: 502 });
   }

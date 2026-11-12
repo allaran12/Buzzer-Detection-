@@ -39,15 +39,14 @@ export default function FAQ() {
     >
       <div className="mx-auto max-w-screen-lg px-4 md:px-6">
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-40px" }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-2xl mx-auto mb-12"
         >
-          <span className="eyebrow inline-block">PERTANYAAN UMUM</span>
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[var(--foreground)] mt-1.5">
-            FAQ Seputar NEXANTARA
+            FAQ
           </h2>
           <p className="mt-3 text-sm md:text-base text-[var(--muted-foreground)] leading-relaxed">
             Hal yang sering ditanyakan mengenai cara kerja, metodologi 3-pilar, dan batasan analisis
@@ -55,7 +54,7 @@ export default function FAQ() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}

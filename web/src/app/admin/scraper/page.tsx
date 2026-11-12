@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 export default function ScraperAdminPage() {
-  const [token, setToken] = useState("local-admin");
+  const [token, setToken] = useState("");
   const [form, setForm] = useState({ password: "", email: "", email_password: "", auth_token: "", ct0: "" });
   const [accounts, setAccounts] = useState<Array<{ username: string; active: boolean; logged_in: boolean; error_msg?: string }>>([]);
   const [message, setMessage] = useState("");
@@ -34,7 +34,7 @@ export default function ScraperAdminPage() {
     <main className="mx-auto min-h-screen max-w-xl px-6 py-12">
       <h1 className="text-2xl font-bold text-[var(--foreground)]">Local Scraper Admin</h1>
       <p className="mt-2 text-sm text-[var(--muted-foreground)]">Kredensial hanya dikirim ke backend lokal dan tidak ditampilkan kembali.</p>
-      <label className="mt-8 block text-sm font-semibold">Admin token<input type="password" value={token} onChange={(event) => setToken(event.target.value)} className="mt-2 w-full rounded-lg border border-[var(--border)] bg-[var(--background)] p-3" /></label>
+      <label className="mt-8 block text-sm font-semibold">Admin token<input type="password" value={token} onChange={(event) => setToken(event.target.value)} placeholder="local-admin (lokal) atau token production" className="mt-2 w-full rounded-lg border border-[var(--border)] bg-[var(--background)] p-3" /></label>
       <button type="button" onClick={() => void refresh()} disabled={!token} className="mt-4 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-semibold disabled:opacity-50">Cek status akun</button>
       <form onSubmit={submit} className="mt-6 space-y-4 rounded-xl border border-[var(--border)] p-5">
         <p className="text-sm text-[var(--muted-foreground)]">Gunakan cookie session dari browser lokal. Username dan password X tidak diperlukan.</p>
