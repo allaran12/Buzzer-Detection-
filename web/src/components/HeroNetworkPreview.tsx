@@ -1,29 +1,43 @@
 "use client";
 
-export default function HeroNetworkPreview() {
-  const nodes = [
-    { handle: "@WempiF90099",      score: 92, fill: "var(--accent-danger)", r: 22, cx: 240, cy: 140, pulse: true },
-    { handle: "@cyber_indojaya99", score: 89, fill: "var(--accent-danger)", r: 20, cx: 160, cy: 200, pulse: false },
-    { handle: "@buzzer_senter07",  score: 84, fill: "var(--accent-danger)", r: 18, cx: 320, cy: 210, pulse: false },
-    { handle: "@Uniliswara0",      score: 68, fill: "var(--accent-warn)",   r: 16, cx: 200, cy: 280, pulse: false },
-    { handle: "@notnamern",        score: 54, fill: "var(--accent-warn)",   r: 14, cx: 350, cy: 140, pulse: false },
-    { handle: "@naraeraa",         score: 22, fill: "var(--accent-go)",     r: 12, cx: 120, cy: 100, pulse: false },
-    { handle: "@ccaramelh2h",      score: 34, fill: "var(--accent-go)",     r: 12, cx: 380, cy: 290, pulse: false },
-    { handle: "@BuchroniK",        score: 28, fill: "var(--accent-go)",     r: 12, cx:  80, cy: 250, pulse: false },
-  ];
+import { BuzzerAccount } from "@/types/buzzer";
 
-  // Edges: [from-index, to-index, isHighRisk]
-  const edges: [number, number, boolean][] = [
-    [0, 1, true],
-    [0, 2, true],
-    [1, 2, true],
-    [1, 3, false],
-    [2, 4, false],
-    [3, 7, false],
-    [5, 7, false],
-    [5, 6, false],
-    [4, 6, false],
-  ];
+type NetworkEdge = { source: string; target: string; relationType: string };
+
+type Props = {
+  accounts?: BuzzerAccount[];
+  edges?: NetworkEdge[];
+};
+
+function nodeColor(account: BuzzerAccount): string {
+  if (account.riskLevel === "high") return "var(--accent-danger)";
+  if (account.riskLevel === "medium") return "var(--accent-warn)";
+  return "var(--accent-go)";
+}
+
+function layoutNodes(accounts: BuzzerAccount[]) {
+  const centerX = 240;
+  const centerY = 185;
+  const radius = Math.min(145, Math.max(72, accounts.length * 17));
+  return accounts.map((account, index) => {
+    const angle = accounts.length === 1 ? -Math.PI / 2 : (index / accounts.length) * Math.PI * 2 - Math.PI / 2;
+    const score = Math.max(0, Math.min(100, Number(account.buzzerScore) || 0));
+    return {
+      account,
+      handle: `@${account.username.replace(/^@/, "")}`,
+      score: Math.round(score),
+      fill: nodeColor(account),
+      r: Math.max(12, Math.min(23, 11 + score / 10)),
+      cx: centerX + Math.cos(angle) * radius,
+      cy: centerY + Math.sin(angle) * radius,
+      pulse: index === 0 && account.riskLevel === "high",
+    };
+  });
+}
+
+export default function HeroNetworkPreview({ accounts = [], edges = [] }: Props) {
+  const nodes = layoutNodes(accounts.slice(0, 20));
+  const nodeById = new Map(nodes.map((node) => [node.account.id, node]));
 
   return (
     <div className="relative w-full h-full flex items-center justify-center select-none">
@@ -56,18 +70,24 @@ export default function HeroNetworkPreview() {
         <rect width="480" height="380" fill="url(#grid-dots)" />
 
         {/* Edges */}
-        {edges.map(([a, b, highRisk], i) => (
-          <line
-            key={i}
-            x1={nodes[a].cx}
-            y1={nodes[a].cy}
-            x2={nodes[b].cx}
-            y2={nodes[b].cy}
-            stroke={highRisk ? "var(--accent-danger)" : "var(--border)"}
-            strokeWidth={highRisk ? 1.5 : 1}
-            opacity={highRisk ? 0.5 : 0.4}
-          />
-        ))}
+        {edges.map((edge, index) => {
+          const source = nodeById.get(edge.source);
+          const target = nodeById.get(edge.target);
+          if (!source || !target) return null;
+          const highRisk = source.account.riskLevel === "high" || target.account.riskLevel === "high";
+          return (
+            <line
+              key={`${edge.source}-${edge.target}-${edge.relationType}-${index}`}
+              x1={source.cx}
+              y1={source.cy}
+              x2={target.cx}
+              y2={target.cy}
+              stroke={highRisk ? "var(--accent-danger)" : "var(--border)"}
+              strokeWidth={highRisk ? 1.5 : 1}
+              opacity={highRisk ? 0.5 : 0.4}
+            />
+          );
+        })}
 
         {/* Nodes */}
         {nodes.map((node) => (
@@ -119,6 +139,12 @@ export default function HeroNetworkPreview() {
             </text>
           </g>
         ))}
+
+        {nodes.length === 0 && (
+          <text x="240" y="190" textAnchor="middle" fill="var(--muted-foreground)" fontSize="13">
+            Belum ada relasi pada sampel live
+          </text>
+        )}
       </svg>
     </div>
   );

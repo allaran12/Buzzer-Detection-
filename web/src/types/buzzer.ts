@@ -50,6 +50,14 @@ export interface BuzzerAccount {
   // Detail components
   indicators: SuspiciousIndicator[];
   tweets: TweetSample[];
+
+  // Live inference metadata returned by the backend.
+  explanation?: string;
+  probabilityBuzzer?: number;
+  confidence?: number;
+  prediction?: string;
+  reviewStatus?: string;
+  branchScores?: Record<string, number>;
 }
 
 export interface DashboardSummary {
