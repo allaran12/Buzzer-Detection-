@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState, FormEvent } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -14,24 +13,8 @@ import {
 } from "lucide-react";
 import HeroNetworkPreview from "./HeroNetworkPreview";
 import { BuzzerAccount } from "@/types/buzzer";
-import logo from "@/app/LOGO WEB.png";
 
 type ResultTab = "visualisasi" | "frasa" | "sentimen" | "kluster";
-
-const SAMPLE_PRESETS = [
-  {
-    label: "Isu Kalimantan",
-    url: "https://x.com/WempiF90099/status/18293019284",
-  },
-  {
-    label: "Isu Pilpres wowo2",
-    url: "https://x.com/cyber_indojaya99/status/18392019482",
-  },
-  {
-    label: "Isu RoySuryo",
-    url: "https://x.com/buzzer_senter07/status/18482019381",
-  },
-];
 
 interface AnalysisResultData {
   query: string;
@@ -86,37 +69,20 @@ export default function Hero() {
       if (!res.ok) {
         setErrorMsg(data.error || "Gagal menjalankan analisis tautan");
       } else {
-        const accs: BuzzerAccount[] = data.newAccounts || [];
+        const accs: BuzzerAccount[] = data.newAccounts || data.accounts || [];
+        const summary = data.summary || {};
+        const averageScore = Number(summary.average_score || 0);
+        const highRisk = Number(summary.high_risk_count || 0);
+        const mediumRisk = Number(summary.medium_risk_count || 0);
         setResult({
           query: targetUrl,
-          score: 87,
-          riskLevel: "high",
+          score: averageScore,
+          riskLevel: highRisk > 0 ? "high" : mediumRisk > 0 ? "medium" : "low",
           accounts: accs,
-          duplicateRatio: 0.84,
-          burstRatio: 0.91,
-          repeatedPhrases: [
-            {
-              phrase: "Ayo kawal terus narasi ini sampai tuntas",
-              count: 18,
-              similarity: 94,
-            },
-            {
-              phrase: "Jangan biarkan pihak lain membelokkan opini publik",
-              count: 14,
-              similarity: 89,
-            },
-            {
-              phrase: "Ini sudah jelas bukti kegagalan kebijakan",
-              count: 11,
-              similarity: 85,
-            },
-            {
-              phrase: "Sebarkan ke semua grup sekarang juga!",
-              count: 9,
-              similarity: 82,
-            },
-          ],
-          sentimentBreakdown: { negative: 82, neutral: 14, positive: 4 },
+          duplicateRatio: 0,
+          burstRatio: 0,
+          repeatedPhrases: [],
+          sentimentBreakdown: { negative: 0, neutral: 100, positive: 0 },
         });
 
         // Smooth scroll to results
