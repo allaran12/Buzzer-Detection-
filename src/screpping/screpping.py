@@ -6,17 +6,26 @@ Instalasi:
     pip install -U streamlit twscrape pandas scikit-learn
 """
 import asyncio
+import os
 import re
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
 
 import pandas as pd
-import streamlit as st
+try:
+    import streamlit as st
+except ImportError:
+    st = None
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # KONFIGURASI
-DB_PATH = "accounts.db"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
+configured_db = os.getenv("COORDINX_SCRAPER_DB")
+configured_db_path = Path(configured_db) if configured_db else REPOSITORY_ROOT / "accounts.db"
+if not configured_db_path.is_absolute():
+    configured_db_path = REPOSITORY_ROOT / configured_db_path
+DB_PATH = str(configured_db_path.resolve())
 ACCOUNT_NAME = "acc1"
 RAW_DATA_DIR = Path("../../data/raw")
 
@@ -172,7 +181,7 @@ def extract_post_row(tweet) -> dict | None:
 async def _scrape(query, limit, cookies, fetch_replies=False, days=None):
     from twscrape import API, gather
 
-    api = API(DB_PATH)
+    api = API(DB_PATH, raise_when_no_account=True)
     cookies = clean_cookies(cookies)
 
     if cookies:
@@ -265,17 +274,20 @@ async def _scrape(query, limit, cookies, fetch_replies=False, days=None):
         )
     return dataframe
 
-def scrape(query, limit, cookies, fetch_replies=False, days=None):
-    """Jalankan fungsi async dari antarmuka Streamlit."""
-    return asyncio.run(
-        _scrape(
-            query=query,
-            limit=limit,
-            cookies=cookies,
-            fetch_replies=fetch_replies,
-            days=days,
-        )
+async def scrape_async(query, limit, cookies, fetch_replies=False, days=None):
+    """Koleksi data untuk caller async seperti FastAPI."""
+    return await _scrape(
+        query=query,
+        limit=limit,
+        cookies=cookies,
+        fetch_replies=fetch_replies,
+        days=days,
     )
+
+
+def scrape(query, limit, cookies, fetch_replies=False, days=None):
+    """Jalankan koleksi async dari antarmuka sinkron seperti Streamlit."""
+    return asyncio.run(scrape_async(query, limit, cookies, fetch_replies, days))
 
 async def _accounts_status():
     from twscrape import API
