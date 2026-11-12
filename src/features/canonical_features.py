@@ -16,6 +16,9 @@ import pandas as pd
 BATCH_CONFIG = {
     "batch2": {"issue_id": "wowo2", "source": "data/processed/wowo2/standardized_data.csv"},
     "batch3": {"issue_id": "RoySuryo", "source": "data/processed/RoySuryo/standardized_data.csv"},
+    "batch4": {"issue_id": "ManfaatnyaDirasakan", "source": "data/processed/ManfaatnyaDirasakan/standardized_data.csv"},
+    "batch5": {"issue_id": "rasanyaman", "source": "data/processed/rasanyaman/standardized_data.csv"},
+    "batch6": {"issue_id": "misi18tokped", "source": "data/processed/misi18tokped/standardized_data.csv"},
 }
 ID_COLUMNS = [
     "post_id", "account_id", "id", "user_id", "source_post_id",
@@ -117,7 +120,17 @@ def _parse_candidate_type(root: Path, batch: str) -> dict[str, str]:
 def _load_labels(root: Path, batch: str, accounts: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, Any]]:
     path = root / "data" / "labels" / f"{batch}_labeled_combined.csv"
     if not path.exists():
-        raise FileNotFoundError(f"Label file tidak ditemukan: {path}")
+        empty = pd.DataFrame(columns=[
+            "account_id", "username", "dataset_id", "issue_id", "label", "evidence",
+            "notes", "review_status", "candidate_type", "label_source",
+        ])
+        return empty, {
+            "source_path": None,
+            "source_rows": 0,
+            "label_counts": {},
+            "unmatched_labels": 0,
+            "status": "NO_MANUAL_LABELS",
+        }
     labels = pd.read_csv(path, dtype="string", keep_default_na=True)
     if "username" not in labels.columns or "label" not in labels.columns:
         raise ValueError(f"Label {path} harus memiliki username dan label")
@@ -446,7 +459,7 @@ def generate_all(root: str | Path | None = None) -> dict[str, Any]:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate canonical CoordinX Phase 3 features")
     parser.add_argument("--root", default=None)
-    parser.add_argument("--batch", choices=["batch2", "batch3", "all"], default="all")
+    parser.add_argument("--batch", choices=[*BATCH_CONFIG.keys(), "all"], default="all")
     args = parser.parse_args()
     result = generate_all(args.root) if args.batch == "all" else {args.batch: generate_batch(args.root, args.batch)}
     for batch, validation in result.items():

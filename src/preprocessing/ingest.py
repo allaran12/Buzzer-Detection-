@@ -8,8 +8,12 @@ Usage:
 import argparse
 from pathlib import Path
 import pandas as pd
-from cleaning import clean_dataset, read_csv_safely
-from standardization import standardize_dataset
+try:
+    from cleaning import clean_dataset, read_csv_safely
+    from standardization import standardize_dataset
+except ModuleNotFoundError:
+    from preprocessing.cleaning import clean_dataset, read_csv_safely
+    from preprocessing.standardization import standardize_dataset
 
 def run_ingest(raw_csv_path: str, interim_dir: str = "data/interim", processed_dir: str = "data/processed"):
     input_path = Path(raw_csv_path)

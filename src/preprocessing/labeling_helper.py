@@ -4,26 +4,45 @@ Labeling Helper Script - Interactive CLI for buzzer account labeling
 Usage: python labeling_helper.py [batch]
   python labeling_helper.py batch2
   python labeling_helper.py batch3
+  python labeling_helper.py batch4
+  python labeling_helper.py batch5
 """
 
 import pandas as pd
 import sys
-import os
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 BATCH_CONFIG = {
     "batch2": {
-        "top30": "../../data/labels/batch2_top30_for_review.csv",
-        "random20": "../../data/labels/batch2_random20_for_review.csv",
-        "posts": "../../data/features/batch2_posts_with_features.csv",
-        "combined": "../../data/labels/batch2_labeled_combined.csv",
+        "top30": REPO_ROOT / "data/labels/batch2_top30_for_review.csv",
+        "random20": REPO_ROOT / "data/labels/batch2_random20_for_review.csv",
+        "posts": REPO_ROOT / "data/features/batch2_posts_with_features.csv",
+        "combined": REPO_ROOT / "data/labels/batch2_labeled_combined.csv",
         "name": "Batch 2 (wowo2)",
     },
     "batch3": {
-        "top30": "../../data/labels/batch3_top30_for_review.csv",
-        "random20": "../../data/labels/batch3_random20_for_review.csv",
-        "posts": "../../data/features/batch3_posts_with_features.csv",
-        "combined": "../../data/labels/batch3_labeled_combined.csv",
+        "top30": REPO_ROOT / "data/labels/batch3_top30_for_review.csv",
+        "random20": REPO_ROOT / "data/labels/batch3_random20_for_review.csv",
+        "posts": REPO_ROOT / "data/features/batch3_posts_with_features.csv",
+        "combined": REPO_ROOT / "data/labels/batch3_labeled_combined.csv",
         "name": "Batch 3 (RoySuryo)",
+    },
+    "batch4": {
+        "top30": REPO_ROOT / "data/labels/batch4_top30_for_review.csv",
+        "random20": REPO_ROOT / "data/labels/batch4_random20_for_review.csv",
+        "posts": REPO_ROOT / "data/features/batch4_posts_with_features.csv",
+        "combined": REPO_ROOT / "data/labels/batch4_labeled_combined.csv",
+        "name": "Batch 4 (ManfaatnyaDirasakan)",
+    },
+    "batch5": {
+        "top30": REPO_ROOT / "data/labels/batch5_top30_for_review.csv",
+        "random20": REPO_ROOT / "data/labels/batch5_random20_for_review.csv",
+        "posts": REPO_ROOT / "data/features/batch5_posts_with_features.csv",
+        "combined": REPO_ROOT / "data/labels/batch5_labeled_combined.csv",
+        "name": "Batch 5 (rasanyaman)",
     },
 }
 
@@ -66,6 +85,12 @@ class LabelingHelper:
         print(f"  Post Rate: {account['post_rate']:.2f} posts/hour")
         print(f"  Avg Hashtags: {account['avg_tags']:.1f}")
         print(f"  Avg Body Length: {account['avg_body_len']:.0f} chars")
+        if 'pseudo_label_name' in account.index:
+            print(
+                "  Model suggestion (reference only): "
+                f"{account['pseudo_label_name']} "
+                f"(P buzzer={float(account['model_probability_buzzer']):.3f})"
+            )
         if 'out_degree' in account.index:
             print(f"  Out-degree (replies/quotes): {account['out_degree']:.0f}")
         if 'follower_ratio' in account.index:
@@ -93,13 +118,18 @@ class LabelingHelper:
 
             choice = input("\nYour choice: ").strip().lower()
 
-            if choice == '1':    return 1, ""
-            elif choice == '0':  return 0, ""
-            elif choice == 's':  return None, ""
+            if choice in {'1', '0'}:
+                evidence = input("Evidence singkat (wajib): ").strip()
+                if not evidence:
+                    print("Evidence wajib diisi untuk label 0/1.")
+                    continue
+                notes = input("Catatan tambahan (opsional): ").strip()
+                return int(choice), evidence, notes
+            elif choice == 's':  return None, "", ""
             elif choice == 'd':
                 self.show_account_detail(username)
                 continue
-            elif choice == 'q':  return 'quit', ""
+            elif choice == 'q':  return 'quit', "", ""
             else: print("Invalid choice. Try again.")
 
     def label_batch(self, df, batch_name):
@@ -113,19 +143,25 @@ class LabelingHelper:
         print(f"Already labeled: {df['label'].notna().sum()}")
         print(f"Remaining: {df['label'].isna().sum()}\n")
 
+        for column in ("evidence", "notes", "review_status"):
+            if column not in df.columns:
+                df[column] = pd.NA
+
         for idx, row in df.iterrows():
             username = row['username']
             if pd.notna(row['label']) and row['label'] != '':
                 continue
             self.show_account_detail(username)
-            label, notes = self.get_label_input(username)
+            label, evidence, notes = self.get_label_input(username)
             if label == 'quit':
                 break
             elif label is None:
                 print(f"⏭️  Skipped @{username}")
             else:
                 df.at[idx, 'label'] = label
+                df.at[idx, 'evidence'] = evidence
                 df.at[idx, 'notes'] = notes
+                df.at[idx, 'review_status'] = 'VERIFIED'
                 labeled_count += 1
                 print(f"✓ Labeled @{username} as {'BUZZER' if label == 1 else 'ORGANIC'}")
 
@@ -206,7 +242,7 @@ if __name__ == "__main__":
     batch_id = sys.argv[1] if len(sys.argv) > 1 else None
 
     if batch_id not in BATCH_CONFIG:
-        print("Usage: python labeling_helper.py [batch2|batch3]")
+        print("Usage: python labeling_helper.py [batch2|batch3|batch4|batch5]")
         print(f"Available: {list(BATCH_CONFIG.keys())}")
         sys.exit(1)
 

@@ -22,17 +22,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 # KONFIGURASI
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 configured_db = os.getenv("COORDINX_SCRAPER_DB")
-configured_db_path = Path(configured_db) if configured_db else REPOSITORY_ROOT / "accounts.db"
+configured_db_path = Path(configured_db) if configured_db else REPOSITORY_ROOT / "screpping" / "accounts.db"
 if not configured_db_path.is_absolute():
     configured_db_path = REPOSITORY_ROOT / configured_db_path
 DB_PATH = str(configured_db_path.resolve())
 ACCOUNT_NAME = "acc1"
-RAW_DATA_DIR = Path("../../data/raw")
+RAW_DATA_DIR = REPOSITORY_ROOT / "data" / "raw"
 
 def parse_post_id(value: str):
     """Ambil ID postingan dari URL X/Twitter yang mengandung /status/{id}."""
     match = re.search(r"/status/(\d+)", str(value))
-    return int(match.group(1)) if match else None
+    return match.group(1) if match else None
 
 def normalize_query(value: str) -> str:
     """Ubah URL hashtag atau URL pencarian X menjadi query pencarian."""
@@ -217,9 +217,9 @@ async def _scrape(query, limit, cookies, fetch_replies=False, days=None):
     post_id = parse_post_id(query)
 
     if post_id:
-        first_post = await api.tweet_details(post_id)
+        first_post = await api.tweet_details(int(post_id))
         items = [first_post] if first_post else []
-        items.extend(await gather(api.tweet_replies(post_id, limit=int(limit))))
+        items.extend(await gather(api.tweet_replies(int(post_id), limit=int(limit))))
 
     else:
         search_query = build_query(query, days)
@@ -299,10 +299,41 @@ async def _accounts_status():
         {
             "username": account.username,
             "active": bool(account.active),
-            "error": account.error_msg,
+            "logged_in": bool(account.has_session),
+            "error_msg": account.error_msg,
         }
         for account in accounts
     ]
+
+
+async def accounts_status_async():
+    """Return scraper account status for the API adapter."""
+    return await _accounts_status()
+
+
+async def configure_session_async(cookies: str):
+    """Store one cookie session and let twscrape validate it."""
+    cookies = clean_cookies(cookies)
+    if "auth_token=" not in cookies or "ct0=" not in cookies:
+        raise ValueError("Format cookie tidak sesuai. Dibutuhkan auth_token dan ct0.")
+    from twscrape import API
+
+    api = API(DB_PATH, raise_when_no_account=True)
+    await api.pool.delete_accounts(ACCOUNT_NAME)
+    await api.pool.add_account(
+        ACCOUNT_NAME,
+        "_",
+        "x@example.com",
+        "_",
+        cookies=cookies,
+    )
+    account = await api.pool.get_account(ACCOUNT_NAME)
+    return {
+        "username": account.username,
+        "active": bool(account.active),
+        "logged_in": bool(account.has_session),
+        "error_msg": account.error_msg,
+    }
 
 def normalize_text_for_similarity(text) -> str:
     """
