@@ -15,7 +15,6 @@ import {
   Network,
   RefreshCw,
   Search,
-  ShieldAlert,
   Users,
 } from "lucide-react";
 import HeroNetworkPreview from "./HeroNetworkPreview";
@@ -75,9 +74,147 @@ type AnalysisResult = {
   sentiment: SentimentSummary;
   duplicateRatio: number;
   burstRatio: number;
-  repeatedPhrases: Array<{ phrase: string; count: number; similarity: number }>;
+  repeatedPhrases: Array<{ phrase: string; count: number; accountCount?: number; similarity: number }>;
   evidence: Record<string, unknown>;
 };
+
+type JsonRecord = Record<string, unknown>;
+
+function asRecord(value: unknown): JsonRecord {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as JsonRecord : {};
+}
+
+function asArray(value: unknown): unknown[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function numeric(value: unknown, fallback = 0): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function deriveSentiment(accounts: BuzzerAccount[]): SentimentSummary {
+  const counts: Record<string, number> = { positive: 0, negative: 0, neutral: 0, mixed: 0 };
+  const examples: SentimentSummary["examples"] = [];
+  let totalScore = 0;
+  let totalPosts = 0;
+  for (const account of accounts) {
+    for (const tweet of account.tweets || []) {
+      const label = tweet.sentiment?.label || "neutral";
+      counts[label] = (counts[label] || 0) + 1;
+      totalScore += numeric(tweet.sentiment?.score);
+      totalPosts += 1;
+      if (examples.length < 8) examples.push({ label, score: numeric(tweet.sentiment?.score), username: account.username, text: tweet.text });
+    }
+  }
+  const percentages = Object.fromEntries(Object.entries(counts).map(([label, count]) => [label, totalPosts ? Math.round((count / totalPosts) * 1000) / 10 : 0]));
+  const dominant = (Object.entries(counts).sort((first, second) => second[1] - first[1])[0]?.[0] || "neutral") as SentimentSummary["dominant"];
+  return {
+    method: "account-tweet-fallback",
+    disclaimer: "Sentimen diturunkan dari detail tweet karena backend tidak mengirim ringkasan sentimen.",
+    total_posts: totalPosts,
+    counts,
+    percentages,
+    average_score: totalPosts ? totalScore / totalPosts : 0,
+    dominant,
+    examples,
+  };
+}
+
+function normalizeSentiment(value: unknown, accounts: BuzzerAccount[]): SentimentSummary {
+  const source = asRecord(value);
+  const fallback = deriveSentiment(accounts);
+  const counts = Object.fromEntries(Object.entries({ ...fallback.counts, ...asRecord(source.counts) }).map(([label, count]) => [label, numeric(count)]));
+  const percentages = Object.fromEntries(Object.entries({ ...fallback.percentages, ...asRecord(source.percentages) }).map(([label, percentage]) => [label, numeric(percentage)]));
+  const examples = asArray(source.examples).filter((item): item is JsonRecord => Boolean(item && typeof item === "object" && !Array.isArray(item))).map((item) => ({
+    label: String(item.label || "neutral"),
+    score: numeric(item.score),
+    username: String(item.username || "unknown"),
+    text: String(item.text || ""),
+  }));
+  return {
+    method: String(source.method || fallback.method),
+    disclaimer: String(source.disclaimer || fallback.disclaimer),
+    total_posts: numeric(source.total_posts ?? source.totalPosts, fallback.total_posts),
+    counts,
+    percentages,
+    average_score: numeric(source.average_score ?? source.averageScore, fallback.average_score),
+    dominant: String(source.dominant || fallback.dominant) as SentimentSummary["dominant"],
+    examples: examples.length ? examples : fallback.examples,
+  };
+}
+
+function deriveNetwork(accounts: BuzzerAccount[]): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
+  const nodes = new Map<string, NetworkNode>();
+  const edges = new Map<string, NetworkEdge>();
+  for (const account of accounts) {
+    nodes.set(account.id, {
+      id: account.id,
+      username: account.username,
+      name: account.name,
+      avatar: account.avatar,
+      role: "account",
+      buzzerScore: account.buzzerScore,
+      riskLevel: account.riskLevel,
+      inDegree: account.inDegree,
+      outDegree: account.outDegree,
+      degree: account.totalDegree ?? ((account.inDegree || 0) + (account.outDegree || 0)),
+      componentSize: account.componentSize,
+    });
+    for (const tweet of account.tweets || []) {
+      if (!tweet.targetUsername || tweet.relationType === "original") continue;
+      const targetId = tweet.targetPostId ? `post:${tweet.targetPostId}` : `target:${tweet.targetUsername}`;
+      if (!nodes.has(targetId)) nodes.set(targetId, { id: targetId, username: tweet.targetUsername, role: "target", isTargetOnly: true, riskLevel: "low" });
+      const key = `${account.id}|${targetId}|${tweet.relationType}`;
+      const current = edges.get(key);
+      edges.set(key, current ? { ...current, count: (current.count || 1) + 1 } : { source: account.id, target: targetId, relationType: tweet.relationType, count: 1 });
+    }
+  }
+  return { nodes: [...nodes.values()], edges: [...edges.values()] };
+}
+
+function normalizeNetwork(value: unknown, edgesValue: unknown, accounts: BuzzerAccount[]): { nodes: NetworkNode[]; edges: NetworkEdge[] } {
+  const rawNodes = asArray(value).filter((item): item is NetworkNode => Boolean(item && typeof item === "object" && !Array.isArray(item))).map((item) => item as NetworkNode);
+  const rawEdges = asArray(edgesValue).filter((item): item is NetworkEdge => Boolean(item && typeof item === "object" && !Array.isArray(item))).map((item) => item as NetworkEdge);
+  if (rawNodes.length || rawEdges.length) return { nodes: rawNodes, edges: rawEdges };
+  return deriveNetwork(accounts);
+}
+
+function deriveRepeatedPhrases(accounts: BuzzerAccount[]): AnalysisResult["repeatedPhrases"] {
+  const phrases = new Map<string, { count: number; accounts: Set<string> }>();
+  for (const account of accounts) {
+    for (const tweet of account.tweets || []) {
+      const tokens = tweet.text.toLowerCase().replace(/https?:\/\/\S+/g, "").match(/[\w#@'-]+/g) || [];
+      const seen = new Set<string>();
+      for (let size = 3; size <= Math.min(6, tokens.length); size += 1) {
+        for (let start = 0; start <= tokens.length - size; start += 1) {
+          const phrase = tokens.slice(start, start + size).join(" ");
+          if (phrase.length < 12 || seen.has(phrase)) continue;
+          seen.add(phrase);
+          const current = phrases.get(phrase) || { count: 0, accounts: new Set<string>() };
+          current.count += 1;
+          current.accounts.add(account.id);
+          phrases.set(phrase, current);
+        }
+      }
+    }
+  }
+  return [...phrases.entries()]
+    .filter(([, value]) => value.accounts.size >= 2)
+    .sort((first, second) => second[1].count - first[1].count)
+    .slice(0, 8)
+    .map(([phrase, value]) => ({ phrase, count: value.count, accountCount: value.accounts.size, similarity: 75 }));
+}
+
+function normalizeEvidence(value: unknown, nodes: NetworkNode[], edges: NetworkEdge[], sentiment: SentimentSummary, repeatedPhrases: AnalysisResult["repeatedPhrases"]): Record<string, unknown> {
+  const source = asRecord(value);
+  return Object.keys(source).length ? source : {
+    topHubs: nodes.filter((node) => node.isHub).slice(0, 5),
+    repeatedPhraseCount: repeatedPhrases.length,
+    sentimentMethod: sentiment.method,
+    validEdgeEvents: edges.reduce((total, edge) => total + numeric(edge.count, 1), 0),
+  };
+}
 
 function parseQueryKind(value: string): QueryKind | null {
   const trimmed = value.trim();
@@ -118,6 +255,24 @@ function sentimentColor(value: string): string {
   return value === "negative" ? "var(--accent-danger)" : value === "positive" ? "var(--accent-go)" : value === "mixed" ? "var(--accent-warn)" : "var(--primary)";
 }
 
+function clampPercentage(value: unknown): number {
+  return Math.min(100, Math.max(0, numeric(value)));
+}
+
+function formatFollowers(value: unknown): string {
+  return new Intl.NumberFormat("id-ID", { notation: "compact", maximumFractionDigits: 1 }).format(Math.max(0, numeric(value)));
+}
+
+const branchDefinitions = [
+  { key: "indobertweet", label: "IndoBERT", color: "var(--primary)" },
+  { key: "temporal_lstm", label: "LSTM", color: "var(--accent-warn)" },
+  { key: "graphsage", label: "GraphSAGE", color: "var(--accent-danger)" },
+];
+
+function branchValues(accounts: BuzzerAccount[]) {
+  return branchDefinitions.map((branch) => ({ ...branch, values: accounts.map((account) => account.branchScores?.[branch.key]).filter((value): value is number => typeof value === "number" && Number.isFinite(value)) }));
+}
+
 function ProfileAvatar({ account, size = 44 }: { account: { username: string; avatar?: string; name?: string }; size?: number }) {
   const [failed, setFailed] = useState(false);
   const source = account.avatar?.trim();
@@ -147,15 +302,18 @@ function Metric({ label, value, tone = "normal", icon: Icon }: { label: string; 
 }
 
 function SentimentBars({ sentiment }: { sentiment: SentimentSummary }) {
-  const entries = ["negative", "neutral", "positive", "mixed"];
+  const entries = ["positive", "negative", "neutral", "mixed"];
+  const total = numeric(sentiment.total_posts);
+  if (total === 0) return <Empty text="Belum ada sampel untuk distribusi sentimen." />;
   return (
     <div className="space-y-3">
-      {entries.map((label) => {
-        const percentage = Number(sentiment.percentages?.[label] ?? 0);
+      {entries.filter((label) => label !== "mixed" || numeric(sentiment.counts?.[label]) > 0 || numeric(sentiment.percentages?.[label]) > 0).map((label) => {
+        const percentage = clampPercentage(sentiment.percentages?.[label]);
+        const count = Math.max(0, numeric(sentiment.counts?.[label]));
         return (
           <div key={label}>
-            <div className="mb-1 flex items-center justify-between text-xs"><span className="font-semibold text-[var(--foreground)]">{sentimentLabel(label)}</span><span className="tabular-nums text-[var(--muted-foreground)]">{percentage.toFixed(1)}%</span></div>
-            <div className="h-2 overflow-hidden rounded-full bg-[var(--border)]"><div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, percentage)}%`, backgroundColor: sentimentColor(label) }} /></div>
+            <div className="mb-1 flex items-center justify-between text-xs"><span className="font-semibold text-[var(--foreground)]">{sentimentLabel(label)}</span><span className="tabular-nums text-[var(--muted-foreground)]">{percentage.toFixed(1)}% · {count} sampel</span></div>
+            <div className="h-2 overflow-hidden rounded-full bg-[var(--border)]"><div className="h-full rounded-full transition-all" title={`${sentimentLabel(label)}: ${percentage.toFixed(1)}% (${count} sampel)`} style={{ width: `${percentage}%`, backgroundColor: sentimentColor(label) }} /></div>
           </div>
         );
       })}
@@ -204,24 +362,29 @@ export default function Hero() {
       const summary = (data.summary || {}) as Record<string, unknown>;
       const highRisk = Number(summary.high_risk_count || 0);
       const mediumRisk = Number(summary.medium_risk_count || 0);
+      const accounts = asArray(data.accounts) as BuzzerAccount[];
+      const network = normalizeNetwork(data.networkNodes ?? data.network_nodes, data.networkEdges ?? data.network_edges, accounts);
+      const repeatedPhrases = asArray(data.repeatedPhrases ?? data.repeated_phrases) as AnalysisResult["repeatedPhrases"];
+      const resolvedPhrases = repeatedPhrases.length ? repeatedPhrases : deriveRepeatedPhrases(accounts);
+      const sentiment = normalizeSentiment(data.sentiment, accounts);
       setResult({
         query,
         score: Number(summary.average_score || 0),
         riskLevel: highRisk > 0 ? "high" : mediumRisk > 0 ? "medium" : "low",
-        accounts: Array.isArray(data.accounts) ? data.accounts as BuzzerAccount[] : [],
+        accounts,
         scannedPosts: Number(summary.total_posts || 0),
         reviewCount: Number(summary.review_count || 0),
         source: String(data.source || "inference"),
         modelVersion: typeof data.modelVersion === "string" ? data.modelVersion : undefined,
         warnings: Array.isArray(data.warnings) ? data.warnings.filter((value): value is string => typeof value === "string" && value.length > 0) : [],
-        networkNodes: Array.isArray(data.networkNodes) ? data.networkNodes as NetworkNode[] : [],
-        networkEdges: Array.isArray(data.networkEdges) ? data.networkEdges as NetworkEdge[] : [],
+        networkNodes: network.nodes,
+        networkEdges: network.edges,
         graph: (data.graph || {}) as Record<string, unknown>,
-        sentiment: (data.sentiment || { method: "", disclaimer: "", total_posts: 0, counts: {}, percentages: {}, average_score: 0, dominant: "neutral", examples: [] }) as SentimentSummary,
+        sentiment,
         duplicateRatio: Number(summary.duplicate_ratio || 0),
         burstRatio: Number(summary.burst_ratio || 0),
-        repeatedPhrases: Array.isArray(data.repeatedPhrases) ? data.repeatedPhrases as AnalysisResult["repeatedPhrases"] : [],
-        evidence: (data.evidence || {}) as Record<string, unknown>,
+        repeatedPhrases: resolvedPhrases,
+        evidence: normalizeEvidence(data.evidence, network.nodes, network.edges, sentiment, resolvedPhrases),
       });
       setActiveResultTab("overview");
       window.setTimeout(() => document.getElementById("hasil-analisis")?.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
@@ -256,9 +419,9 @@ export default function Hero() {
               {queryKind === "post" && <label className="ml-auto inline-flex cursor-pointer items-center gap-2"><input type="checkbox" checked={fetchReplies} onChange={(event) => setFetchReplies(event.target.checked)} className="accent-[var(--primary)]" />ambil balasan</label>}
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              {/* <label className="block text-xs font-semibold text-[var(--foreground)]">Jumlah postingan
+              <label className="block text-xs font-semibold text-[var(--foreground)]">Jumlah postingan
                 <select value={limit} onChange={(event) => setLimit(event.target.value)} className="mt-2 block rounded-xl border border-[var(--border)] bg-[var(--background)] px-3 py-3 text-sm text-[var(--foreground)]"><option value="100">100 terbaru</option><option value="250">250 terbaru</option><option value="500">500 terbaru (maks.)</option></select>
-              </label> */}
+              </label>
               <button type="submit" disabled={loading} className="inline-flex min-h-[48px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition hover:-translate-y-0.5 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60">{loading ? <><Loader2 size={17} className="animate-spin" />Mengambil dan menganalisis...</> : <><Activity size={17} />Jalankan analisis</>}</button>
               <button type="button" onClick={handleClear} className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] px-5 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--card-subtle)]"><RefreshCw size={15} />Bersihkan</button>
             </div>
@@ -295,25 +458,27 @@ function AnalysisPanel({ result, activeTab, setActiveTab }: { result: AnalysisRe
       </div>
       <div className="overflow-x-auto border-b border-[var(--border)] px-4 md:px-7"><div className="flex min-w-max gap-1">{tabs.map(({ id, label, icon: Icon }) => <button key={id} type="button" onClick={() => setActiveTab(id)} className={`inline-flex cursor-pointer items-center gap-2 border-b-2 px-3 py-3.5 text-xs font-bold transition md:px-4 md:text-sm ${activeTab === id ? "border-[var(--primary)] text-[var(--primary)]" : "border-transparent text-[var(--muted-foreground)] hover:text-[var(--foreground)]"}`}><Icon size={15} />{label}</button>)}</div></div>
       <div className="p-5 md:p-8">
-        {activeTab === "overview" && <div className="space-y-6"><div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6"><Metric label="Skor rata-rata" value={`${Math.round(result.score)}`} tone="primary" icon={Activity} /><Metric label="Akun" value={String(result.accounts.length)} icon={Users} /><Metric label="Post" value={String(result.scannedPosts)} tone="primary" icon={FileSearch} /><Metric label="Kemiripan" value={`${Math.round(result.duplicateRatio * 100)}%`} icon={Search} /><Metric label="Burst" value={`${Math.round(result.burstRatio * 100)}%`} tone="danger" icon={Clock3} /><Metric label="Edge graf" value={String(Number((graph.total_edges ?? graph.totalEdges) || 0))} tone="warning" icon={Network} /></div><div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]"><div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5"><div className="mb-4 flex items-start justify-between gap-3"><div><h3 className="text-base font-bold text-[var(--foreground)]">Sinyal utama sampel</h3><p className="mt-1 text-xs leading-5 text-[var(--muted-foreground)]">Tiga branch model tetap menjadi dasar skor; sentiment hanya konteks tambahan.</p></div><span className="rounded-full border border-[var(--primary)]/20 bg-[var(--primary)]/10 px-2.5 py-1 text-[10px] font-bold text-[var(--primary)]">3-pilar fusion</span></div><div className="grid gap-3 sm:grid-cols-3">{[{ label: "IndoBERTweet", value: averageBranch(result.accounts, "indobertweet"), color: "var(--primary)" }, { label: "Temporal LSTM", value: averageBranch(result.accounts, "temporal_lstm"), color: "var(--accent-warn)" }, { label: "GraphSAGE", value: averageBranch(result.accounts, "graphsage"), color: "var(--accent-danger)" }].map((branch) => <div key={branch.label} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4"><div className="text-xs font-semibold text-[var(--muted-foreground)]">{branch.label}</div><div className="mt-2 text-2xl font-extrabold text-[var(--foreground)]">{branch.value}%</div><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--border)]"><div className="h-full rounded-full" style={{ width: `${branch.value}%`, backgroundColor: branch.color }} /></div></div>)}</div></div><div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5"><div className="flex items-center gap-2 text-base font-bold text-[var(--foreground)]"><HeartPulse size={17} className="text-[var(--accent-danger)]" />Sentimen sampel</div><p className="mt-1 text-xs text-[var(--muted-foreground)]">Dominan: <strong className="text-[var(--foreground)]">{sentimentLabel(result.sentiment.dominant)}</strong></p><div className="mt-5"><SentimentBars sentiment={result.sentiment} /></div></div></div></div>}
+        {activeTab === "overview" && <div className="space-y-6">{result.accounts.length === 0 && result.scannedPosts === 0 && <Empty text="Analisis selesai, tetapi belum ada akun atau postingan yang dapat ditampilkan." />}<div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6"><Metric label="Skor rata-rata" value={`${Math.round(result.score)}`} tone="primary" icon={Activity} /><Metric label="Akun" value={String(result.accounts.length)} icon={Users} /><Metric label="Post" value={String(result.scannedPosts)} tone="primary" icon={FileSearch} /><Metric label="Kemiripan" value={`${Math.round(result.duplicateRatio * 100)}%`} icon={Search} /><Metric label="Burst" value={`${Math.round(result.burstRatio * 100)}%`} tone="danger" icon={Clock3} /><Metric label="Edge graf" value={String(Number((graph.total_edges ?? graph.totalEdges) || 0))} tone="warning" icon={Network} /></div><div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]"><div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5"><div className="mb-4 flex items-start justify-between gap-3"><div><h3 className="text-base font-bold text-[var(--foreground)]">Perbandingan Hasil Analisis Model</h3><p className="mt-1 text-xs leading-5 text-[var(--muted-foreground)]">Perbandingan hanya ditampilkan jika respons menyediakan skor aktual dari ketiga branch pada skala yang sama.</p></div></div><ModelComparison accounts={result.accounts} /></div><div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5"><div className="flex items-center gap-2 text-base font-bold text-[var(--foreground)]"><HeartPulse size={17} className="text-[var(--accent-danger)]" />Sentimen sampel</div><p className="mt-1 text-xs text-[var(--muted-foreground)]">Dominan: <strong className="text-[var(--foreground)]">{sentimentLabel(result.sentiment.dominant)}</strong></p><div className="mt-5"><SentimentBars sentiment={result.sentiment} /></div></div></div></div>}
         {activeTab === "network" && <div className="space-y-5"><div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between"><div><h3 className="text-lg font-extrabold text-[var(--foreground)]">Graf relasi pada sampel live</h3><p className="mt-1 max-w-2xl text-xs leading-5 text-[var(--muted-foreground)]">Layout mengikuti pola notebook: komponen terbesar, hub berdasarkan in-degree, arah edge, ukuran node berdasarkan degree, dan label untuk node penting.</p></div>{hub && <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-xs text-red-700 dark:text-red-300">Hub: <strong>@{hub.username}</strong> · in-degree {hub.inDegree ?? 0}</div>}</div><HeroNetworkPreview nodes={result.networkNodes} edges={result.networkEdges} /><div className="grid grid-cols-2 gap-3 sm:grid-cols-4"><Metric label="Node total" value={String(Number(graph.graph_nodes ?? graph.total_nodes ?? graph.totalNodes ?? result.networkNodes.length))} /><Metric label="Edge total" value={String(Number(graph.graph_edges ?? graph.total_edges ?? graph.totalEdges ?? result.networkEdges.length))} /><Metric label="Komponen terbesar" value={String(Number(graph.largest_component_size ?? 0))} tone="primary" /><Metric label="Edge terlihat" value={String(result.networkEdges.length)} tone="warning" /></div></div>}
         {activeTab === "sentiment" && <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]"><div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5"><div className="flex items-center gap-2 text-lg font-bold text-[var(--foreground)]"><HeartPulse size={18} className="text-[var(--accent-danger)]" />Analisis sentimen</div><p className="mt-2 text-xs leading-5 text-[var(--muted-foreground)]">{result.sentiment.disclaimer}</p><div className="mt-6"><SentimentBars sentiment={result.sentiment} /></div><div className="mt-5 flex items-center justify-between rounded-xl border border-[var(--border)] bg-[var(--card)] p-3 text-xs"><span className="text-[var(--muted-foreground)]">Skor rata-rata</span><strong className="text-[var(--foreground)]">{Number(result.sentiment.average_score || 0).toFixed(2)}</strong></div><div className="mt-3 text-[10px] text-[var(--muted-foreground)]">Metode: {result.sentiment.method}</div></div><div className="space-y-3"><h3 className="text-base font-bold text-[var(--foreground)]">Contoh teks paling menonjol</h3>{result.sentiment.examples.length === 0 ? <Empty text="Belum ada sinyal sentimen yang cukup pada sampel." /> : result.sentiment.examples.map((example) => <div key={`${example.label}-${example.username}-${example.text}`} className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-4"><div className="flex items-center justify-between gap-3"><span className="rounded-full px-2.5 py-1 text-[10px] font-bold" style={{ backgroundColor: `${sentimentColor(example.label)}22`, color: sentimentColor(example.label) }}>{sentimentLabel(example.label)}</span><span className="text-[10px] text-[var(--muted-foreground)]">@{example.username} · {Number(example.score).toFixed(2)}</span></div><p className="mt-3 text-sm leading-6 text-[var(--foreground)]">{example.text}</p></div>)}</div></div>}
-        {activeTab === "evidence" && <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr]"><div><div className="mb-4 flex items-center gap-2"><Search size={17} className="text-[var(--primary)]" /><h3 className="text-lg font-extrabold text-[var(--foreground)]">Frasa berulang lintas akun</h3></div>{result.repeatedPhrases.length === 0 ? <Empty text="Belum ada pasangan frasa dengan kemiripan yang cukup." /> : <div className="space-y-3">{result.repeatedPhrases.map((phrase) => <div key={`${phrase.phrase}-${phrase.similarity}`} className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-4"><div className="flex items-start justify-between gap-4"><p className="min-w-0 text-sm font-semibold leading-6 text-[var(--foreground)]">&ldquo;{phrase.phrase}&rdquo;</p><span className="shrink-0 rounded-lg bg-amber-500/10 px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">{phrase.similarity}%</span></div><p className="mt-2 text-xs text-[var(--muted-foreground)]">Terlihat pada minimal {phrase.count} postingan lintas akun.</p></div>)}</div>}</div><div><div className="mb-4 flex items-center gap-2"><BarChart3 size={17} className="text-[var(--accent-warn)]" /><h3 className="text-lg font-extrabold text-[var(--foreground)]">Ringkasan bukti</h3></div><div className="space-y-3 rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5 text-sm">{Object.entries(result.evidence).filter(([key]) => key !== "topHubs").map(([key, value]) => <div key={key} className="flex items-center justify-between gap-4 border-b border-[var(--border)] pb-3 last:border-0 last:pb-0"><span className="text-xs text-[var(--muted-foreground)]">{key.replace(/[A-Z]/g, (letter) => ` ${letter}`).replace(/^./, (letter) => letter.toUpperCase())}</span><strong className="text-[var(--foreground)]">{typeof value === "object" ? JSON.stringify(value) : String(value)}</strong></div>)}</div></div></div>}
+        {activeTab === "evidence" && <div className="grid gap-8 lg:grid-cols-[1fr_0.9fr]"><div><div className="mb-4 flex items-center gap-2"><Search size={17} className="text-[var(--primary)]" /><h3 className="text-lg font-extrabold text-[var(--foreground)]">Frasa berulang lintas akun</h3></div>{result.repeatedPhrases.length === 0 ? <Empty text="Belum ada pasangan frasa dengan kemiripan yang cukup." /> : <div className="space-y-3">{result.repeatedPhrases.map((phrase) => <div key={`${phrase.phrase}-${phrase.similarity}`} className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-4"><div className="flex items-start justify-between gap-4"><p className="min-w-0 text-sm font-semibold leading-6 text-[var(--foreground)]">&ldquo;{phrase.phrase}&rdquo;</p><span className="shrink-0 rounded-lg bg-amber-500/10 px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">{phrase.similarity}%</span></div><p className="mt-2 text-xs text-[var(--muted-foreground)]">Terlihat pada {phrase.count} postingan dari {phrase.accountCount ?? phrase.count} akun berbeda.</p></div>)}</div>}</div><div><div className="mb-4 flex items-center gap-2"><BarChart3 size={17} className="text-[var(--accent-warn)]" /><h3 className="text-lg font-extrabold text-[var(--foreground)]">Ringkasan bukti</h3></div><div className="space-y-3 rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-5 text-sm">{Object.entries(result.evidence).filter(([key]) => key !== "topHubs").map(([key, value]) => <div key={key} className="flex items-center justify-between gap-4 border-b border-[var(--border)] pb-3 last:border-0 last:pb-0"><span className="text-xs text-[var(--muted-foreground)]">{key.replace(/[A-Z]/g, (letter) => ` ${letter}`).replace(/^./, (letter) => letter.toUpperCase())}</span><strong className="text-[var(--foreground)]">{typeof value === "object" ? JSON.stringify(value) : String(value)}</strong></div>)}</div></div></div>}
         {activeTab === "accounts" && <div><div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><h3 className="text-lg font-extrabold text-[var(--foreground)]">Akun yang terdeteksi</h3><p className="mt-1 text-xs text-[var(--muted-foreground)]">Urutan berdasarkan skor fusion. Foto dan metadata berasal dari profil publik yang ikut terscrape.</p></div><span className="text-xs font-semibold text-[var(--muted-foreground)]">{result.accounts.length} akun</span></div>{result.accounts.length === 0 ? <Empty text="Tidak ada akun dari response backend." /> : <div className="grid gap-4 xl:grid-cols-2">{result.accounts.map((account) => <AccountCard key={account.id} account={account} />)}</div>}</div>}
       </div>
     </motion.div>
   );
 }
 
-function averageBranch(accounts: BuzzerAccount[], key: string): number {
-  const values = accounts.map((account) => Number(account.branchScores?.[key] ?? 0)).filter((value) => Number.isFinite(value));
-  return values.length ? Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 100) : 0;
+
+function ModelComparison({ accounts }: { accounts: BuzzerAccount[] }) {
+  const branches = branchValues(accounts);
+  if (!branches.every((branch) => branch.values.length > 0)) return <Empty text="Data perbandingan model belum tersedia pada respons analisis ini" />;
+  return <div className="space-y-4">{branches.map((branch) => { const value = clampPercentage(branch.values.reduce((sum, item) => sum + item, 0) / branch.values.length * 100); return <div key={branch.key}><div className="mb-1 flex justify-between text-xs"><span className="font-semibold text-[var(--foreground)]">{branch.label}</span><span className="tabular-nums text-[var(--muted-foreground)]">{value.toFixed(1)}%</span></div><div className="h-3 overflow-hidden rounded-full bg-[var(--border)]"><div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: branch.color }} /></div></div>; })}</div>;
 }
 
 function AccountCard({ account }: { account: BuzzerAccount }) {
   const [open, setOpen] = useState(false);
-  return <div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-4 transition hover:-translate-y-0.5 hover:shadow-md"><div className="flex items-start gap-3"><ProfileAvatar account={account} size={48} /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><strong className="truncate text-sm text-[var(--foreground)]">{account.name || `@${account.username}`}</strong><span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${riskClass(account.riskLevel)}`}>{account.prediction || riskLabel(account.riskLevel)}</span></div><span className="mt-0.5 block truncate text-xs text-[var(--muted-foreground)]">@{account.username}</span><p className="mt-2 line-clamp-2 text-xs leading-5 text-[var(--muted-foreground)]">{account.bio || account.explanation || "Metadata bio tidak tersedia."}</p></div><div className="shrink-0 text-right"><div className="tabular-score text-2xl text-[var(--foreground)]">{Math.round(account.buzzerScore)}</div><div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">score</div></div></div><div className="mt-4 grid grid-cols-3 gap-2 text-center"><SmallStat label="Post" value={String(account.nPostsInDataset)} /><SmallStat label="Degree" value={String(account.totalDegree ?? account.outDegree)} /><SmallStat label="Sentimen" value={sentimentLabel(account.sentiment?.label || "neutral")} /></div><div className="mt-4 flex items-center justify-between gap-3"><span className="truncate text-xs text-[var(--muted-foreground)]">{account.explanation || "Belum ada evidence dominan"}</span><button type="button" onClick={() => setOpen((value) => !value)} className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-[10px] font-bold text-[var(--foreground)]">Detail <ChevronDown size={13} className={open ? "rotate-180" : ""} /></button></div>{open && <div className="mt-4 space-y-3 border-t border-[var(--border)] pt-4"><div className="grid grid-cols-3 gap-2">{Object.entries(account.branchScores || {}).map(([key, value]) => <SmallStat key={key} label={key.replace("_", " ")} value={`${Math.round(Number(value) * 100)}%`} />)}</div><div className="text-xs leading-5 text-[var(--muted-foreground)]">Followers {account.followers.toLocaleString("id-ID")} · Following {account.following.toLocaleString("id-ID")} · Burst {Math.round(account.burstRatio * 100)}%</div>{account.tweets.slice(0, 5).map((tweet) => <div key={tweet.id} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3"><div className="flex justify-between gap-2 text-[10px] text-[var(--muted-foreground)]"><span>{tweet.relationType} · {tweet.sentiment ? sentimentLabel(tweet.sentiment.label) : "sentimen -"}</span><span>{new Date(tweet.date).toLocaleString("id-ID")}</span></div><p className="mt-2 text-xs leading-5 text-[var(--foreground)]">{tweet.text}</p></div>)}</div>}</div>;
+  return <div className="rounded-2xl border border-[var(--border)] bg-[var(--card-subtle)] p-4 transition hover:-translate-y-0.5 hover:shadow-md"><div className="flex items-start gap-3"><ProfileAvatar account={account} size={48} /><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><strong className="truncate text-sm text-[var(--foreground)]">{account.name || `@${account.username}`}</strong><span className={`rounded-full border px-2 py-0.5 text-[10px] font-bold ${riskClass(account.riskLevel)}`}>{account.prediction || riskLabel(account.riskLevel)}</span></div><span className="mt-0.5 block truncate text-xs text-[var(--muted-foreground)]">@{account.username}</span><p className="mt-2 line-clamp-2 text-xs leading-5 text-[var(--muted-foreground)]">{account.bio || account.explanation || "Metadata bio tidak tersedia."}</p></div><div className="shrink-0 text-right"><div className="tabular-score text-2xl text-[var(--foreground)]">{Math.round(account.buzzerScore)}</div><div className="text-[10px] uppercase tracking-wider text-[var(--muted-foreground)]">score</div></div></div><div className="mt-4 grid grid-cols-3 gap-2 text-center"><SmallStat label="Post" value={String(account.nPostsInDataset)} /><SmallStat label="Followers" value={formatFollowers(account.followers)} title={String(Math.max(0, numeric(account.followers)))} /><SmallStat label="Sentimen" value={sentimentLabel(account.sentiment?.label || "neutral")} /></div><div className="mt-4 flex items-center justify-between gap-3"><span className="truncate text-xs text-[var(--muted-foreground)]">{account.explanation || "Belum ada evidence dominan"}</span><button type="button" onClick={() => setOpen((value) => !value)} className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-lg border border-[var(--border)] bg-[var(--card)] px-2.5 py-1.5 text-[10px] font-bold text-[var(--foreground)]">Detail <ChevronDown size={13} className={open ? "rotate-180" : ""} /></button></div>{open && <div className="mt-4 space-y-3 border-t border-[var(--border)] pt-4"><div className="grid grid-cols-3 gap-2">{Object.entries(account.branchScores || {}).map(([key, value]) => <SmallStat key={key} label={key.replace("_", " ")} value={`${Math.round(Number(value) * 100)}%`} />)}</div><div className="text-xs leading-5 text-[var(--muted-foreground)]">Followers {account.followers.toLocaleString("id-ID")} · Following {account.following.toLocaleString("id-ID")} · Burst {Math.round(account.burstRatio * 100)}%</div>{account.tweets.slice(0, 5).map((tweet) => <div key={tweet.id} className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-3"><div className="flex justify-between gap-2 text-[10px] text-[var(--muted-foreground)]"><span>{tweet.relationType} · {tweet.sentiment ? sentimentLabel(tweet.sentiment.label) : "sentimen -"}</span><span>{new Date(tweet.date).toLocaleString("id-ID")}</span></div><p className="mt-2 text-xs leading-5 text-[var(--foreground)]">{tweet.text}</p></div>)}</div>}</div>;
 }
 
-function SmallStat({ label, value }: { label: string; value: string }) { return <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-2"><div className="text-[9px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">{label}</div><div className="mt-0.5 truncate text-xs font-bold text-[var(--foreground)]">{value}</div></div>; }
+function SmallStat({ label, value, title }: { label: string; value: string; title?: string }) { return <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] px-2 py-2"><div className="text-[9px] font-bold uppercase tracking-wider text-[var(--muted-foreground)]">{label}</div><div title={title} className="mt-0.5 truncate text-xs font-bold text-[var(--foreground)]">{value}</div></div>; }
 function Empty({ text }: { text: string }) { return <div className="rounded-2xl border border-dashed border-[var(--border)] bg-[var(--card-subtle)] p-8 text-center text-sm text-[var(--muted-foreground)]">{text}</div>; }
