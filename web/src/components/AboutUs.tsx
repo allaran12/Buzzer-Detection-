@@ -8,7 +8,7 @@ const FEATURES = [
     title: "Deteksi Pola",
     tagline: "Mengidentifikasi pola narasi yang mencurigakan",
     description:
-      "Algoritma NEXANTARA menganalisis struktur kalimat, frasa umum, repetisi semantik IndoBERTweet, dan anomali waktu untuk mendeteksi aktivitas buzzer yang terkoordinasi.",
+      "NEXANTARA meninjau struktur teks, frasa berulang, dan pola waktu sebagai sinyal pendukung untuk menilai aktivitas yang mungkin terkoordinasi.",
     Icon: Search,
     iconBg: "bg-blue-50 dark:bg-blue-950/40 text-[var(--primary)] border border-blue-100 dark:border-blue-900/50",
   },

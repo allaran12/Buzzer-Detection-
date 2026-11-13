@@ -57,7 +57,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="text-sm font-medium text-[var(--muted-foreground)] hover:text-[var(--primary)] dark:hover:text-white transition-colors"
+              className="rounded-md px-2 py-1 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)] dark:hover:text-white"
             >
               {link.label}
             </a>
@@ -71,7 +71,7 @@ export default function Navbar() {
             type="button"
             onClick={toggleDarkMode}
             aria-label="Toggle dark mode"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] hover:bg-[var(--card-subtle)] transition-colors cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] transition-colors hover:bg-[var(--card-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]"
           >
             {isDark ? (
               <Sun size={17} className="text-amber-400 animate-in fade-in" />
@@ -88,7 +88,7 @@ export default function Navbar() {
             type="button"
             onClick={toggleDarkMode}
             aria-label="Toggle dark mode"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)]"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]"
           >
             {isDark ? (
               <Sun size={17} className="text-amber-400" />
@@ -99,7 +99,7 @@ export default function Navbar() {
 
           <button
             type="button"
-            className="p-2 rounded-md text-[var(--foreground)] hover:bg-[var(--card)]"
+            className="rounded-md p-2 text-[var(--foreground)] transition-colors hover:bg-[var(--card)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]"
             onClick={() => setMobileOpen((o) => !o)}
             aria-label="Toggle Menu"
           >
@@ -117,7 +117,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-md px-3 py-2 text-sm font-medium text-[var(--muted-foreground)] hover:bg-[var(--card-subtle)] hover:text-[var(--foreground)] transition-colors"
+                className="rounded-md px-3 py-2 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--card-subtle)] hover:text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
               >
                 {link.label}
               </a>

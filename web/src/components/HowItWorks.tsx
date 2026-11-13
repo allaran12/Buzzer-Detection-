@@ -19,10 +19,10 @@ const STEPS = [
     Icon: Cpu,
   },
   {
-    num: "3. Inferensi 3-Pilar AI",
+    num: "3. Baca Tiga Sinyal",
     title: "Evaluasi Multidimensi",
     description:
-      "Model menganalisis repetisi kalimat semantik (IndoBERTweet), sinkronisasi waktu posting serentak (LSTM), dan graf jaringan (GraphSAGE).",
+      "Sistem membandingkan pola teks dan frasa berulang, jeda waktu posting, serta relasi antar akun untuk menemukan sinyal yang perlu ditinjau.",
     Icon: BarChart3,
   },
   {
