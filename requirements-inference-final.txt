@@ -1,0 +1,19 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+pandas==3.1.1
+numpy==2.5.4
+scikit-learn==1.7.2
+matplotlib==3.11.2
+seaborn==0.13.2
+networkx==3.7
+torch==2.15.0
+transformers==4.46.3
+torch-geometric==2.6.1
+accelerate==1.15.0
+sentencepiece==0.2.3
+safetensors==0.8.0
+tokenizers==0.20.3
+xxhash==4.1.0
+fastapi==0.162.4
+uvicorn==0.54.0
+pydantic==2.14.3
+twscrape==0.17.0

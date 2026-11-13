@@ -251,7 +251,7 @@ function sentimentLabel(value: string): string {
 }
 
 function sentimentColor(value: string): string {
-  return value === "negative" ? "var(--accent-danger)" : value === "positive" ? "var(--accent-go)" : value === "mixed" ? "var(--accent-warn)" : "var(--primary)";
+  return value === "negative" ? "#EF4444" : value === "positive" ? "#10B981" : value === "mixed" ? "#F59E0B" : "#3B82F6";
 }
 
 function clampPercentage(value: unknown): number {
@@ -308,24 +308,61 @@ function Metric({ label, value, tone = "normal", icon: Icon }: { label: string; 
   );
 }
 
+function VerticalBarChart({
+  items,
+  maxValue,
+  formatValue,
+  formatTooltip,
+  yLabel,
+}: {
+  items: Array<{ label: string; value: number; color: string; percentage?: number }>;
+  maxValue: number;
+  formatValue: (value: number, item: { label: string; value: number; color: string; percentage?: number }) => string;
+  formatTooltip: (item: { label: string; value: number; color: string; percentage?: number }) => string;
+  yLabel: string;
+}) {
+  const chartHeight = 190;
+  const safeMax = Math.max(1, maxValue);
+  const gridValues = [safeMax, safeMax * 0.75, safeMax * 0.5, safeMax * 0.25, 0];
+  return (
+    <div className="mt-5" role="img" aria-label={`${yLabel}: ${items.map((item) => `${item.label} ${formatValue(item.value, item)}`).join(", ")}`}>
+      <div className="flex gap-3">
+        <div className="flex flex-col justify-between pb-6 text-[10px] tabular-nums text-[var(--muted-foreground)]" style={{ height: chartHeight }}>
+          {gridValues.map((value) => <span key={value}>{Math.round(value)}{yLabel === "Persentase" ? "%" : ""}</span>)}
+        </div>
+        <div className="relative min-w-0 flex-1" style={{ height: chartHeight }}>
+          <div className="pointer-events-none absolute inset-x-0 top-0 bottom-6 flex flex-col justify-between">
+            {gridValues.map((value) => <span key={value} className="border-t border-[var(--border)]/70" />)}
+          </div>
+          <div className="absolute inset-x-0 bottom-6 top-0 flex items-end justify-around gap-2 px-2 sm:gap-5 sm:px-6">
+            {items.map((item) => {
+              const height = Math.max(item.value > 0 ? 3 : 0, (Math.max(0, item.value) / safeMax) * 100);
+              return (
+                <div key={item.label} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end" title={formatTooltip(item)}>
+                  <span className="mb-1 whitespace-nowrap text-[10px] font-bold tabular-nums text-[var(--foreground)] sm:text-xs">{formatValue(item.value, item)}</span>
+                  <div className="w-full max-w-16 origin-bottom rounded-t-md transition-[height] duration-700 ease-out" style={{ height: `${height}%`, backgroundColor: item.color }} />
+                  <span className="mt-2 max-w-full truncate text-center text-[10px] font-semibold text-[var(--muted-foreground)] sm:text-xs">{item.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SentimentBars({ sentiment }: { sentiment: SentimentSummary }) {
   const entries = ["positive", "negative", "neutral", "mixed"];
   const total = numeric(sentiment.total_posts);
   if (total === 0) return <Empty text="Belum ada sampel untuk distribusi sentimen." />;
-  return (
-    <div className="space-y-3">
-      {entries.filter((label) => label !== "mixed" || numeric(sentiment.counts?.[label]) > 0 || numeric(sentiment.percentages?.[label]) > 0).map((label) => {
-        const percentage = clampPercentage(sentiment.percentages?.[label]);
-        const count = Math.max(0, numeric(sentiment.counts?.[label]));
-        return (
-          <div key={label}>
-            <div className="mb-1 flex items-center justify-between text-xs"><span className="font-semibold text-[var(--foreground)]">{sentimentLabel(label)}</span><span className="tabular-nums text-[var(--muted-foreground)]">{percentage.toFixed(1)}% · {count} sampel</span></div>
-            <div className="h-2 overflow-hidden rounded-full bg-[var(--border)]"><div className="h-full rounded-full transition-all" title={`${sentimentLabel(label)}: ${percentage.toFixed(1)}% (${count} sampel)`} style={{ width: `${percentage}%`, backgroundColor: sentimentColor(label) }} /></div>
-          </div>
-        );
-      })}
-    </div>
-  );
+  const items = entries.map((label) => ({
+    label: sentimentLabel(label),
+    value: Math.max(0, numeric(sentiment.counts?.[label])),
+    percentage: clampPercentage(sentiment.percentages?.[label]),
+    color: sentimentColor(label),
+  }));
+  return <VerticalBarChart items={items} maxValue={Math.max(total, ...items.map((item) => item.value))} yLabel="Jumlah sampel" formatValue={(value, item) => `${value} (${item.percentage?.toFixed(1)}%)`} formatTooltip={(item) => `${item.label}: ${item.value} sampel (${item.percentage?.toFixed(1)}%)`} />;
 }
 
 export default function Hero() {
@@ -414,21 +451,17 @@ export default function Hero() {
         <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} className="mx-auto mt-10 max-w-4xl rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 md:p-8">
           <div className="flex flex-col gap-3 border-b border-[var(--border)] pb-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="flex items-center gap-2 text-3xl font-bold text-[var(--foreground)]"><FileSearch size={19} className="text-[var(--primary)]" />Analisis URL X</div>
-              <p className="mt-1 text-xs leading-5 text-[var(--muted-foreground)]">Maksimal 500 postingan terbaru.</p>
+              <div className="flex items-center gap-2 text-3xl font-bold text-[var(--foreground)]">Analisis URL X</div>
             </div>
           </div>
           <form onSubmit={handleAnalyze} className="mt-6 space-y-5">
             <label className="block space-y-2 text-xs font-bold text-[var(--foreground)]">URL posting / hashtag / keyword
               <div className="relative"><Search size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" /><input type="text" required value={queryInput} onChange={(event) => setQueryInput(event.target.value)} placeholder="https://x.com/user/status/123... atau #topik atau kata kunci" className="w-full rounded-xl border border-[var(--border)] bg-[var(--background)] py-3.5 pl-11 pr-4 font-mono text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] transition focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]" /></div>
-            </label>
-            <div className="flex flex-wrap items-center gap-2 text-[11px] text-[var(--muted-foreground)]">
-              {queryKind === "post" && <label className="ml-auto inline-flex cursor-pointer items-center gap-2"><input type="checkbox" checked={fetchReplies} onChange={(event) => setFetchReplies(event.target.checked)} className="rounded border border-[var(--border)] accent-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]" />ambil balasan</label>}
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
-              <label className="block text-xs font-semibold text-[var(--foreground)]">Jumlah postingan
-                <select value={limit} onChange={(event) => setLimit(event.target.value)} className="mt-2 block rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2.5 text-sm text-[var(--foreground)] transition focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]"><option value="100">100 terbaru</option><option value="250">250 terbaru</option><option value="500">500 terbaru (maks.)</option></select>
-              </label>
+             </label>
+
+             <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+
+
               <button type="submit" disabled={loading} className="inline-flex min-h-[48px] flex-1 cursor-pointer items-center justify-center gap-2 rounded-lg bg-[var(--primary)] px-5 py-3 text-sm font-bold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)] disabled:cursor-not-allowed disabled:opacity-60">{loading ? <><Loader2 size={17} className="animate-spin" />Mengambil dan menganalisis...</> : <><Activity size={17} />Jalankan analisis</>}</button>
               <button type="button" onClick={handleClear} className="inline-flex min-h-[48px] cursor-pointer items-center justify-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--card)] px-5 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:bg-[var(--card-subtle)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)]"><RefreshCw size={15} />Bersihkan</button>
             </div>
@@ -478,8 +511,13 @@ function AnalysisPanel({ result, activeTab, setActiveTab }: { result: AnalysisRe
 
 function ModelComparison({ accounts }: { accounts: BuzzerAccount[] }) {
   const comparison = signalValues(accounts);
-  if (!comparison) return <Empty text="Data perbandingan sinyal belum tersedia pada respons analisis ini" />;
-  return <div className="space-y-4">{comparison.signals.map((signal) => { const value = clampPercentage(signal.values.reduce((sum, item) => sum + item, 0) / signal.values.length * comparison.scale); return <div key={signal.key}><div className="mb-1 flex justify-between text-xs"><span className="font-semibold text-[var(--foreground)]">{signal.label}</span><span className="tabular-nums text-[var(--muted-foreground)]">{value.toFixed(1)}%</span></div><div className="h-3 overflow-hidden rounded-full bg-[var(--border)]"><div className="h-full rounded-full" style={{ width: `${value}%`, backgroundColor: signal.color }} /></div></div>; })}</div>;
+  if (!comparison) return <Empty text="Data perbandingan model belum tersedia pada respons analisis ini" />;
+  const items = comparison.signals.map((signal) => ({
+    label: signal.label,
+    value: clampPercentage(signal.values.reduce((sum, item) => sum + item, 0) / signal.values.length * comparison.scale),
+    color: signal.key === "indobertweet" ? "#2563EB" : signal.key === "temporal_lstm" ? "#F59E0B" : "#8B5CF6",
+  }));
+  return <VerticalBarChart items={items} maxValue={100} yLabel="Persentase" formatValue={(value) => `${value.toFixed(1)}%`} formatTooltip={(item) => `${item.label}: ${item.value.toFixed(1)}%`} />;
 }
 
 function AccountCard({ account }: { account: BuzzerAccount }) {

@@ -10,6 +10,7 @@ import json
 import pickle
 import re
 import sys
+from collections import Counter, defaultdict
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -39,6 +40,19 @@ MODEL_VERSION = "coordinx-final-v1.0.0"
 SCHEMA_VERSION = "coordinx-final-output-v1"
 FUSION_WEIGHTS = {"indobertweet": 0.4, "temporal_lstm": 0.3, "graphsage": 0.3}
 
+POSITIVE_WORDS = {
+    "baik", "bagus", "benar", "bantu", "dukungan", "dukung", "hebat", "jujur",
+    "maju", "aman", "sukses", "setuju", "solusi", "terima", "kasih", "love",
+    "good", "great", "support", "success", "safe", "thank", "thanks",
+}
+NEGATIVE_WORDS = {
+    "buruk", "bohong", "benci", "gagal", "marah", "korup", "krisis", "masalah",
+    "palsu", "rusak", "tolak", "ancam", "hoaks", "hate", "bad", "fail", "fraud",
+    "scam", "angry", "wrong", "problem", "fake", "corrupt",
+}
+NEGATION_WORDS = {"tidak", "bukan", "belum", "jangan", "tak", "nggak", "gak", "not", "never", "no"}
+SENTIMENT_LABELS = ("positive", "negative", "neutral", "mixed")
+
 
 def _normalise(value: Any) -> str | None:
     return normalize_identifier(value)
@@ -64,6 +78,89 @@ def _safe_int(value: Any, default: int = 0) -> int:
         return int(float(value))
     except (TypeError, ValueError):
         return default
+
+def _sentiment(text: Any) -> tuple[str, float]:
+    """Return a transparent lexicon signal for live context, not a model verdict."""
+    tokens = re.findall(r"[a-zA-ZÀ-ÿ0-9']+", str(text or "").lower())
+    if not tokens:
+        return "neutral", 0.0
+    positive = 0
+    negative = 0
+    for index, token in enumerate(tokens):
+        negated = index > 0 and tokens[index - 1] in NEGATION_WORDS
+        if token in POSITIVE_WORDS:
+            if negated:
+                negative += 1
+            else:
+                positive += 1
+        elif token in NEGATIVE_WORDS:
+            if negated:
+                positive += 1
+            else:
+                negative += 1
+    total = positive + negative
+    if total == 0:
+        return "neutral", 0.0
+    score = (positive - negative) / max(total, 1)
+    if positive and negative:
+        label = "mixed"
+    elif score >= 0.2:
+        label = "positive"
+    elif score <= -0.2:
+        label = "negative"
+    else:
+        label = "neutral"
+    return label, round(float(score), 4)
+
+def _sentiment_summary(posts: pd.DataFrame) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    rows: list[dict[str, Any]] = []
+    for row in posts.itertuples(index=False):
+        label, score = _sentiment(getattr(row, "text", ""))
+        rows.append({
+            "label": label,
+            "score": score,
+            "username": str(getattr(row, "username", "unknown")),
+            "text": str(getattr(row, "text", "")),
+            "account_key": str(getattr(row, "account_key", "")),
+        })
+    counts = Counter(row["label"] for row in rows)
+    total = len(rows)
+    percentages = {label: round((counts.get(label, 0) / total) * 100, 1) if total else 0.0 for label in SENTIMENT_LABELS}
+    average_score = round(float(np.mean([row["score"] for row in rows])) if rows else 0.0, 4)
+    dominant = max(SENTIMENT_LABELS, key=lambda label: counts.get(label, 0)) if rows else "neutral"
+    if len([label for label in SENTIMENT_LABELS if counts.get(label, 0) > 0]) > 1:
+        top = sorted((counts.get(label, 0) for label in SENTIMENT_LABELS), reverse=True)
+        if len(top) > 1 and top[1] > 0 and top[0] - top[1] <= max(1, round(total * 0.15)):
+            dominant = "mixed"
+    by_account: dict[str, dict[str, Any]] = {}
+    grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in rows:
+        grouped[row["account_key"]].append(row)
+    for key, values in grouped.items():
+        account_counts = Counter(value["label"] for value in values)
+        account_dominant = max(SENTIMENT_LABELS, key=lambda label: account_counts.get(label, 0))
+        if sum(account_counts.get(label, 0) > 0 for label in SENTIMENT_LABELS) > 1:
+            account_dominant = "mixed"
+        by_account[key] = {
+            "label": account_dominant,
+            "score": round(float(np.mean([value["score"] for value in values])), 4),
+            "counts": {label: account_counts.get(label, 0) for label in SENTIMENT_LABELS},
+            "posts": len(values),
+        }
+    summary = {
+        "method": "lexicon-live-v1",
+        "disclaimer": "Sentimen bersifat indikatif berbasis leksikon; bukan penilaian kebenaran isi atau afiliasi akun.",
+        "total_posts": total,
+        "counts": {label: counts.get(label, 0) for label in SENTIMENT_LABELS},
+        "percentages": percentages,
+        "average_score": average_score,
+        "dominant": dominant,
+        "examples": [
+            {key: row[key] for key in ("label", "score", "username", "text")}
+            for row in sorted(rows, key=lambda row: abs(row["score"]), reverse=True)[:6]
+        ],
+    }
+    return summary, by_account
 
 
 def prepare_live_posts(
@@ -91,6 +188,7 @@ def prepare_live_posts(
         "post_id": pd.NA,
         "account_id": pd.NA,
         "username": "unknown",
+        "name": "",
         "text": "",
         "date": pd.NaT,
         "created": pd.NaT,
@@ -115,6 +213,7 @@ def prepare_live_posts(
     posts["post_id"] = posts["post_id"].map(_normalise).astype("string")
     posts["account_id"] = posts["account_id"].map(_normalise).astype("string")
     posts["username"] = posts["username"].fillna("unknown").astype("string").str.strip()
+    posts["name"] = posts["name"].fillna(posts["username"]).astype("string").str.strip()
     posts["text"] = posts["text"].fillna("").astype("string")
     posts["date"] = pd.to_datetime(posts["date"], errors="coerce", utc=True)
     posts["created"] = pd.to_datetime(posts["created"], errors="coerce", utc=True)
@@ -158,6 +257,7 @@ def prepare_live_posts(
     posts["body_len"] = posts["body_clean"].str.len().astype(float)
     posts["n_tags"] = posts["text"].str.count(r"#[\w_]+")
     posts["has_url"] = posts["text"].str.contains(r"https?://", regex=True, na=False).astype(float)
+    posts["avatar"] = posts["avatar"].fillna("").astype("string").str.replace("_normal.", "_400x400.", regex=False)
     posts = posts.dropna(subset=["post_id", "account_id", "date"])
     posts = posts[posts["text_model_input"].str.strip().ne("")].copy()
     if posts.empty:
@@ -263,28 +363,113 @@ def _similarity_evidence(posts: pd.DataFrame) -> tuple[pd.Series, list[dict[str,
     except ValueError:
         return pd.Series(similarities, index=posts.index), phrases
     keys = posts["account_key"].to_numpy()
+    phrase_accounts: dict[str, set[str]] = defaultdict(set)
+    phrase_posts: dict[str, set[str]] = defaultdict(set)
+    phrase_similarity: dict[str, float] = defaultdict(float)
     for index in range(len(posts)):
         matrix[index, keys == keys[index]] = 0.0
         similarities[index] = float(matrix[index].max())
-        peer = int(matrix[index].argmax())
-        if similarities[index] >= 0.75 and len(phrases) < 20:
+        tokens = re.findall(r"[\w#@'-]+", values.iloc[index].lower())
+        for size in range(2, min(6, len(tokens) + 1)):
+            for start in range(0, len(tokens) - size + 1):
+                phrase = " ".join(tokens[start : start + size]).strip(" -")
+                if len(phrase) < 8:
+                    continue
+                phrase_accounts[phrase].add(str(keys[index]))
+                post_id = str(posts.iloc[index].get("post_id") or index)
+                phrase_posts[phrase].add(post_id)
+                phrase_similarity[phrase] = max(phrase_similarity[phrase], similarities[index])
+
+    for phrase, account_keys in phrase_accounts.items():
+        if len(account_keys) >= 2:
             phrases.append({
-                "phrase": values.iloc[index][:160],
-                "count": 2,
-                "similarity": round(similarities[index] * 100, 1),
+                "phrase": phrase[:160],
+                "count": len(phrase_posts[phrase]),
+                "accountCount": len(account_keys),
+                "similarity": round(max(phrase_similarity[phrase], 0.75) * 100, 1),
             })
+    phrases.sort(key=lambda value: (value["count"], value["similarity"], len(value["phrase"])), reverse=True)
     deduped: list[dict[str, Any]] = []
-    seen: set[str] = set()
-    for item in sorted(phrases, key=lambda value: value["similarity"], reverse=True):
-        key = item["phrase"]
-        if key not in seen:
-            seen.add(key)
+    for item in phrases:
+        if not any(item["phrase"] in existing["phrase"] or existing["phrase"] in item["phrase"] for existing in deduped):
             deduped.append(item)
     return pd.Series(similarities, index=posts.index), deduped[:8]
+
+def _network_payload(
+    accounts: pd.DataFrame,
+    interactions: pd.DataFrame,
+    probabilities: np.ndarray,
+    graph_stats: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+    account_rows = {str(row.account_id): row for row in accounts.itertuples(index=False)}
+    scores = {account_id: float(probabilities[index]) for index, account_id in enumerate(accounts["account_id"].astype(str))}
+    edge_counter: Counter[tuple[str, str, str]] = Counter()
+    username_by_id: dict[str, str] = {
+        account_id: str(getattr(row, "username", "unknown")) for account_id, row in account_rows.items()
+    }
+    for row in interactions.loc[interactions["is_valid_edge"]].itertuples(index=False):
+        source = str(row.source_account_id)
+        target = str(row.target_account_id)
+        relation = str(row.relation_type)
+        edge_counter[(source, target, relation)] += 1
+        if getattr(row, "target_username", None):
+            username_by_id.setdefault(target, str(row.target_username))
+
+    degree_in: Counter[str] = Counter()
+    degree_out: Counter[str] = Counter()
+    for (source, target, _), count in edge_counter.items():
+        degree_out[source] += count
+        degree_in[target] += count
+
+    nodes: list[dict[str, Any]] = []
+    all_ids = set(account_rows) | {target for _, target, _ in edge_counter}
+    max_degree = max((degree_in[node_id] + degree_out[node_id] for node_id in all_ids), default=0)
+    for node_id in sorted(all_ids):
+        row = account_rows.get(node_id)
+        is_target_only = row is None
+        degree = degree_in[node_id] + degree_out[node_id]
+        node = {
+            "id": node_id,
+            "username": username_by_id.get(node_id, node_id),
+            "name": str(getattr(row, "name", "")) if row is not None else username_by_id.get(node_id, node_id),
+            "avatar": str(getattr(row, "avatar", "") or "") if row is not None else "",
+            "role": "target" if is_target_only else "account",
+            "isTargetOnly": is_target_only,
+            "isHub": bool(degree == max_degree and degree > 0),
+            "buzzerScore": round(scores.get(node_id, 0.0) * 100, 2),
+            "riskLevel": _risk(scores.get(node_id, 0.0)) if not is_target_only else "low",
+            "inDegree": int(degree_in[node_id]),
+            "outDegree": int(degree_out[node_id]),
+            "degree": int(degree),
+            "componentSize": int(getattr(row, "component_size", 1) or 1) if row is not None else 1,
+        }
+        nodes.append(node)
+    edges = [
+        {
+            "source": source,
+            "target": target,
+            "relationType": relation,
+            "count": int(count),
+        }
+        for (source, target, relation), count in sorted(edge_counter.items())
+    ]
+    enriched_stats = {
+        **graph_stats,
+        "total_nodes": len(nodes),
+        "total_edges": len(edges),
+        "network_nodes": len(nodes),
+        "network_edges": len(edges),
+        "largest_component_size": max((int(node.get("componentSize", 1)) for node in nodes), default=0),
+        "hub": max(nodes, key=lambda node: node.get("degree", 0), default=None),
+    }
+    return nodes, edges, enriched_stats
 
 
 def _status(value: float) -> str:
     return "danger" if value >= 70 else "warning" if value >= 40 else "normal"
+
+def _risk(value: float) -> str:
+    return "high" if value >= 0.65 else "low" if value <= 0.35 else "medium"
 
 
 class LiveModelEngine:
@@ -321,6 +506,11 @@ class LiveModelEngine:
             lambda row: account_key(row["dataset_id"], row["account_id"]), axis=1
         )
         accounts["follower_ratio_ui"] = accounts["following"] / accounts["followers"].clip(lower=1)
+        accounts["name"] = accounts.get("name", accounts["username"]).fillna(accounts["username"]).astype(str)
+        accounts["avatar"] = accounts.get("avatar", pd.Series("", index=accounts.index)).fillna("").astype(str)
+        accounts["bio"] = accounts.get("bio", pd.Series("", index=accounts.index)).fillna("").astype(str)
+        accounts["statuses"] = pd.to_numeric(accounts.get("statuses", 0), errors="coerce").fillna(0)
+        accounts["created"] = pd.to_datetime(accounts.get("created", pd.NaT), errors="coerce", utc=True)
 
         text_frame = posts[["account_key", "text_model_input"]].rename(columns={"text_model_input": "text"})
         text_embeddings = _encode_live_texts(text_frame["text"].tolist(), self.text_checkpoint, int(self.text_artifact["encoder"].get("max_length", 128)))
@@ -339,6 +529,7 @@ class LiveModelEngine:
         graph_probabilities = np.asarray([graph_by_key.get(key, 0.0) for key in accounts["account_key"]])
 
         similarity, repeated_phrases = _similarity_evidence(posts)
+        sentiment, sentiment_by_account = _sentiment_summary(posts)
         posts["duplicate_similarity"] = similarity.to_numpy()
         posts["burst_event"] = posts["date"].dt.floor("min").map(
             posts.groupby(posts["date"].dt.floor("min"))["account_key"].nunique() >= 3
@@ -349,6 +540,7 @@ class LiveModelEngine:
             + FUSION_WEIGHTS["temporal_lstm"] * temporal_probabilities
             + FUSION_WEIGHTS["graphsage"] * graph_probabilities
         )
+        network_nodes, network_edges, graph_stats = _network_payload(accounts, interactions, fusion, graph_stats)
         context_limited = len(posts) < 3 or len(accounts) < 2
         output_accounts: list[dict[str, Any]] = []
         for index, row in accounts.reset_index(drop=True).iterrows():
@@ -379,6 +571,7 @@ class LiveModelEngine:
                 evidence.append("belum ada bukti koordinasi dominan pada sampel")
             tweets = []
             for post in account_posts.head(5).itertuples():
+                tweet_sentiment_label, tweet_sentiment_score = _sentiment(post.text)
                 tweets.append({
                     "id": str(post.post_id),
                     "date": pd.Timestamp(post.date).isoformat(),
@@ -388,14 +581,15 @@ class LiveModelEngine:
                     "targetPostId": str(post.target_post_id) if pd.notna(post.target_post_id) else None,
                     "duplicateSimilarity": round(_safe_float(post.duplicate_similarity), 3),
                     "burstEvent": bool(post.burst_event),
+                    "sentiment": {"label": tweet_sentiment_label, "score": tweet_sentiment_score},
                 })
             output_accounts.append({
                 "id": str(row["account_id"]),
                 "username": username,
-                "name": username,
+                "name": str(row.get("name") or username),
                 "avatar": str(row.get("avatar") or ""),
                 "bio": str(row.get("bio") or ""),
-                "created": pd.Timestamp(row["first_post"]).isoformat() if pd.notna(row.get("first_post")) else "",
+                "created": pd.Timestamp(row["created"]).isoformat() if pd.notna(row.get("created")) else "",
                 "accountAgeDays": age_days,
                 "followers": _safe_int(row.get("followers")),
                 "following": _safe_int(row.get("following")),
@@ -413,6 +607,7 @@ class LiveModelEngine:
                 "clusterId": f"live-component-{_safe_int(row.get('component_size'), 1)}",
                 "indicators": indicators,
                 "tweets": tweets,
+                "sentiment": sentiment_by_account.get(row["account_key"], {"label": "neutral", "score": 0.0, "counts": {label: 0 for label in SENTIMENT_LABELS}, "posts": len(account_posts)}),
                 "probabilityBuzzer": round(probability, 6),
                 "confidence": round(abs(probability - 0.5) * 2, 6),
                 "prediction": predicted,
@@ -429,10 +624,16 @@ class LiveModelEngine:
             "medium_risk_count": sum(value["riskLevel"] == "medium" for value in output_accounts),
             "low_risk_count": sum(value["riskLevel"] == "low" for value in output_accounts),
             "review_count": sum(value["prediction"] == "Review" for value in output_accounts),
-            "average_score": round(float(np.mean(fusion) * 100), 2),
             "duplicate_ratio": round(float(posts["duplicate_similarity"].mean()), 4),
             "burst_ratio": round(float(accounts["burst_ratio_1h"].mean()), 4),
-            "clusters_detected": int(graph_stats.get("graph_nodes", 0)),
+            "clusters_detected": int(graph_stats.get("components", graph_stats.get("graph_nodes", 0))),
+            "average_score": round(float(np.mean(fusion) * 100), 2),
+        }
+        evidence = {
+            "topHubs": [node for node in sorted(network_nodes, key=lambda value: value.get("degree", 0), reverse=True) if node.get("degree", 0) > 0][:5],
+            "repeatedPhraseCount": len(repeated_phrases),
+            "sentimentMethod": sentiment["method"],
+            "validEdgeEvents": graph_stats.get("valid_edge_events", 0),
         }
         return {
             "source": "live_scrape",
@@ -442,14 +643,14 @@ class LiveModelEngine:
             "accounts": output_accounts,
             "summary": summary,
             "repeatedPhrases": repeated_phrases,
-            "networkEdges": [
-                {"source": str(row.source_account_id), "target": str(row.target_account_id), "relationType": str(row.relation_type)}
-                for row in interactions.loc[interactions["is_valid_edge"], ["source_account_id", "target_account_id", "relation_type"]].itertuples()
-            ],
-            "warnings": [
+            "networkNodes": network_nodes,
+            "networkEdges": network_edges,
+            "sentiment": sentiment,
+            "evidence": evidence,
+            "warnings": [warning for warning in [
                 "Skor adalah indikasi koordinasi, bukan vonis bahwa akun adalah buzzer.",
                 "Sampel live kecil diarahkan ke human review." if context_limited else "",
-            ],
+            ] if warning],
             "graph": graph_stats,
         }
 

@@ -22,7 +22,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 # KONFIGURASI
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 configured_db = os.getenv("COORDINX_SCRAPER_DB")
-configured_db_path = Path(configured_db) if configured_db else REPOSITORY_ROOT / "screpping" / "accounts.db"
+configured_db_path = Path(configured_db) if configured_db else REPOSITORY_ROOT / "accounts.db"
 if not configured_db_path.is_absolute():
     configured_db_path = REPOSITORY_ROOT / configured_db_path
 DB_PATH = str(configured_db_path.resolve())
@@ -70,6 +70,12 @@ def clean_cookies(cookies: str) -> str:
     """Rapikan format cookie tanpa mencetak nilainya ke log."""
     cookies = (cookies or "").strip().strip('"').strip("'")
     return re.sub(r"\s*;\s*", "; ", cookies)
+
+
+def _account_logged_in(account) -> bool:
+    """Support twscrape versions with and without ``has_session``."""
+    session_state = getattr(account, "has_session", None)
+    return bool(account.active if session_state is None else session_state)
 
 def safe_filename(value: str) -> str:
     """Batasi nama file agar tidak mengandung path atau karakter berbahaya."""
@@ -165,6 +171,7 @@ def extract_post_row(tweet) -> dict | None:
         ),
 
         "username": getattr(user, "username", None),
+        "name": getattr(user, "displayname", None) or getattr(user, "username", None),
         "created": getattr(user, "created", None),
         "followers": getattr(user, "followersCount", None),
         "following": getattr(user, "friendsCount", None),
@@ -299,7 +306,7 @@ async def _accounts_status():
         {
             "username": account.username,
             "active": bool(account.active),
-            "logged_in": bool(account.has_session),
+            "logged_in": _account_logged_in(account),
             "error_msg": account.error_msg,
         }
         for account in accounts
@@ -331,7 +338,7 @@ async def configure_session_async(cookies: str):
     return {
         "username": account.username,
         "active": bool(account.active),
-        "logged_in": bool(account.has_session),
+        "logged_in": _account_logged_in(account),
         "error_msg": account.error_msg,
     }
 
@@ -368,6 +375,7 @@ def ensure_compatible_columns(dataframe: pd.DataFrame) -> pd.DataFrame:
         "account_id": None,
         "text": "",
         "username": "unknown",
+        "name": "",
         "date": None,
         "created": None,
         "followers": 0,

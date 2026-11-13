@@ -17,6 +17,10 @@ Thumbs.db
 # Data & Models cache
 *.pkl
 *.sqlite3
+*.db
+.env
+.env.*
+!.env.example
 
 # Node / Next.js
 web/node_modules/

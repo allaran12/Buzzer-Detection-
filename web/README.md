@@ -26,7 +26,7 @@ python -m pip install -r requirements-web-backend.txt
 Jalankan backend dari root repository:
 
 ```bash
-uvicorn src.api_service:app --host 127.0.0.1 --port 8000
+PYTHONPATH=. uvicorn services.inference_api.main:app --host 127.0.0.1 --port 8000
 ```
 
 Di terminal lain, jalankan frontend dari direktori `web/`:
@@ -54,9 +54,9 @@ Pencarian live dapat berupa:
 - `https://x.com/search?q=topik`
 - `#topik` atau keyword biasa
 
-UI menyediakan pilihan 100, 250, atau 500 postingan terbaru tanpa pembatas waktu default. Sentiment memakai `lexicon-id-v1` sebagai konteks tambahan dan tidak memengaruhi skor fusion. API masih menerima `days` bila analisis perlu dibatasi ke rentang tertentu.
+UI menyediakan pilihan 100, 250, atau 500 postingan terbaru tanpa pembatas waktu default. Sentimen memakai `lexicon-live-v1` sebagai konteks tambahan dan tidak memengaruhi skor fusion. API masih menerima `days` bila analisis perlu dibatasi ke rentang tertentu.
 
-Jika URL valid tetapi scraping gagal, pastikan akun aktif di `screpping/accounts.db` dan session cookie sudah diatur melalui `/admin/scraper`. Skor adalah indikasi koordinasi untuk human review, bukan vonis bahwa akun pasti buzzer.
+Jika URL valid tetapi scraping gagal, backend mencoba sampel lokal yang relevan untuk topik yang tersedia (`RoySuryo`, `prayforkalimantan`, `wowo2`, `jokowi`, `riaricis`, atau `wowo`) dan menandai response dengan `source: local_dataset_fallback` serta warning yang transparan. Untuk topik lain, pastikan akun aktif di `accounts.db` dan session cookie sudah diatur melalui `/admin/scraper`. Skor adalah indikasi koordinasi untuk human review, bukan vonis bahwa akun pasti buzzer.
 
 ---
 

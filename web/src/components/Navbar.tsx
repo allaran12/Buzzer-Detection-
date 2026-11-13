@@ -15,6 +15,8 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState("analisis");
 
   useEffect(() => {
     // Check initial dark mode state
@@ -23,6 +25,29 @@ export default function Navbar() {
       const timer = setTimeout(() => setIsDark(true), 0);
       return () => clearTimeout(timer);
     }
+  }, []);
+
+  useEffect(() => {
+    const sections = NAV_LINKS.map((link) => document.querySelector(link.href));
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+      const current = sections.reduce((visible, section) => {
+        if (section && section.getBoundingClientRect().top <= 120) return section.id;
+        return visible;
+      }, "analisis");
+      setActiveSection(current);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
   const toggleDarkMode = () => {
@@ -38,7 +63,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-[var(--border)] bg-white/95 dark:bg-[var(--card)]/90 backdrop-blur-md transition-colors duration-200">
+    <header className={`sticky top-0 z-40 w-full border-b border-[var(--border)] bg-[var(--card)]/95 transition-shadow duration-200 ${scrolled ? "shadow-sm" : ""}`}>
       <div className="mx-auto flex h-16 max-w-screen-lg items-center justify-between px-4 md:px-6">
         <a href="#" className="select-none group">
           <Image
@@ -57,7 +82,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-md px-2 py-1 text-sm font-medium text-[var(--muted-foreground)] transition-colors hover:text-[var(--primary)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)] dark:hover:text-white"
+              className={`rounded-md border-b-2 px-2 py-1 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2 focus:ring-offset-[var(--card)] ${activeSection === link.href.slice(1) ? "border-[var(--primary)] text-[var(--primary)]" : "border-transparent text-[var(--muted-foreground)] hover:border-[var(--primary)]/40 hover:text-[var(--primary)]"}`}
             >
               {link.label}
             </a>

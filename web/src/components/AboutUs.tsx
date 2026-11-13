@@ -10,7 +10,7 @@ const FEATURES = [
     description:
       "NEXANTARA meninjau struktur teks, frasa berulang, dan pola waktu sebagai sinyal pendukung untuk menilai aktivitas yang mungkin terkoordinasi.",
     Icon: Search,
-    iconBg: "bg-blue-50 dark:bg-blue-950/40 text-[var(--primary)] border border-blue-100 dark:border-blue-900/50",
+    iconBg: "bg-orange-50 dark:bg-orange-950/30 text-[var(--primary)] border border-orange-100 dark:border-orange-900/50",
   },
   {
     title: "Visualisasi Data",
@@ -18,7 +18,7 @@ const FEATURES = [
     description:
       "Visualisasi grafik interaktif membantu Anda memahami topologi hubungan antar akun, sentralitas mention/reply, serta memetakan kluster aktivitas yang mencurigakan.",
     Icon: Network,
-    iconBg: "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 border border-indigo-100 dark:border-indigo-900/50",
+    iconBg: "bg-orange-50 dark:bg-orange-950/30 text-[var(--primary)] border border-orange-100 dark:border-orange-900/50",
   },
   {
     title: "Analisis Pengguna",

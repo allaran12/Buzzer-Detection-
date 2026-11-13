@@ -74,7 +74,7 @@ export default function HowItWorks() {
                 className="rounded-2xl border border-[var(--border)] bg-white dark:bg-[var(--card)] p-6 md:p-7 shadow-xs hover:border-[var(--primary)]/50 hover:shadow-md transition-all duration-200"
               >
                 <div className="flex items-center gap-4 mb-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/40 text-[var(--primary)] border border-blue-100 dark:border-blue-900/40">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-950/30 text-[var(--primary)] border border-orange-100 dark:border-orange-900/40">
                     <Icon size={22} />
                   </div>
                   <div>

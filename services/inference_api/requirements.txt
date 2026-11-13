@@ -1,0 +1,9 @@
+pandas
+numpy
+scikit-learn==1.7.2
+fastapi
+uvicorn
+pydantic
+matplotlib
+networkx
+seaborn

@@ -37,31 +37,68 @@
 }
 
 :root {
-  --background: hsl(210, 22%, 98%);
-  --foreground: hsl(220, 30%, 14%);
-  --primary: hsl(222, 84%, 48%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --muted-foreground: hsl(220, 8%, 46%);
-  --border: hsl(212, 18%, 89%);
-  --card: hsl(0, 0%, 100%);
-  --card-subtle: hsl(210, 26%, 95%);
-  --accent-go: hsl(150, 58%, 40%);
-  --accent-warn: hsl(32, 90%, 52%);
-  --accent-danger: hsl(350, 84%, 54%);
+  --background: #fafafa;
+  --foreground: #171717;
+  --primary: #f97316;
+  --primary-hover: #ea580c;
+  --primary-pressed: #c2410c;
+  --primary-foreground: #ffffff;
+  --primary-soft: rgba(249, 115, 22, 0.1);
+  --muted-foreground: #525252;
+  --border: #e5e5e5;
+  --card: #ffffff;
+  --card-subtle: #f5f5f5;
+  --accent-go: #10b981;
+  --accent-warn: #f59e0b;
+  --accent-danger: #ef4444;
 }
 
 .dark {
-  --background: hsl(224, 45%, 6%);
-  --foreground: hsl(210, 25%, 97%);
-  --primary: hsl(217, 91%, 60%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --muted-foreground: hsl(215, 18%, 65%);
-  --border: hsl(220, 28%, 18%);
-  --card: hsl(224, 40%, 10%);
-  --card-subtle: hsl(224, 35%, 14%);
-  --accent-go: hsl(150, 68%, 46%);
-  --accent-warn: hsl(35, 92%, 55%);
-  --accent-danger: hsl(350, 89%, 60%);
+  --background: #000000;
+  --foreground: #fafafa;
+  --primary: #f97316;
+  --primary-hover: #ea580c;
+  --primary-pressed: #c2410c;
+  --primary-foreground: #ffffff;
+  --primary-soft: rgba(249, 115, 22, 0.12);
+  --muted-foreground: #a3a3a3;
+  --border: #262626;
+  --card: #0a0a0a;
+  --card-subtle: #111111;
+  --accent-go: #34d399;
+  --accent-warn: #fbbf24;
+  --accent-danger: #f87171;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal:not(.reveal-visible) {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .reveal {
+    transition: opacity 600ms ease-out, transform 600ms ease-out;
+  }
 }
 
 body {

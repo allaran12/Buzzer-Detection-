@@ -28,7 +28,7 @@ export async function GET(request: Request) {
     });
     return NextResponse.json(await readJson(response), { status: response.status });
   } catch {
-    return NextResponse.json({ error: "Inference backend tidak berjalan di port 8000" }, { status: 502 });
+    return NextResponse.json({ error: "Inference backend Railway tidak merespons. Periksa status service backend." }, { status: 502 });
   }
 }
 
@@ -46,6 +46,6 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(await readJson(response), { status: response.status });
   } catch {
-    return NextResponse.json({ error: "Inference backend tidak berjalan di port 8000" }, { status: 502 });
+    return NextResponse.json({ error: "Inference backend Railway tidak merespons. Periksa status service backend." }, { status: 502 });
   }
 }

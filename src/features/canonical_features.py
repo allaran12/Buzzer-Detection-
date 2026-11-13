@@ -317,6 +317,7 @@ def _build_graph(posts: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, dict[
         "unique_directed_edges": int(valid[["source_account_id", "target_account_id"]].drop_duplicates().shape[0]),
         "graph_nodes": int(graph.number_of_nodes()),
         "graph_edges": int(graph.number_of_edges()),
+        "components": int(nx.number_connected_components(undirected)) if graph.number_of_nodes() else 0,
     }
     return interactions, graph_frame, stats
 
@@ -331,6 +332,7 @@ def _account_features(posts: pd.DataFrame, graph_frame: pd.DataFrame) -> pd.Data
         rows.append({
             "account_id": str(account_id),
             "username": _first_non_null(group["username"]),
+            "name": _first_non_null(group["name"]) if "name" in group else _first_non_null(group["username"]),
             "dataset_id": _first_non_null(group["dataset_id"]),
             "issue_id": _first_non_null(group["issue_id"]),
             "n_posts": int(len(group)),
@@ -343,8 +345,12 @@ def _account_features(posts: pd.DataFrame, graph_frame: pd.DataFrame) -> pd.Data
             "n_originals": int((group["relation_type"] == "original").sum()),
             "first_post": times.min() if not times.empty else pd.NaT,
             "last_post": times.max() if not times.empty else pd.NaT,
+            "created": _first_non_null(pd.to_datetime(group.get("created"), errors="coerce", utc=True)) if "created" in group else pd.NaT,
             "followers": _first_non_null(pd.to_numeric(group.get("followers"), errors="coerce")),
             "following": _first_non_null(pd.to_numeric(group.get("following"), errors="coerce")),
+            "statuses": _first_non_null(pd.to_numeric(group.get("statuses"), errors="coerce")),
+            "bio": _first_non_null(group["bio"]) if "bio" in group else "",
+            "avatar": _first_non_null(group["avatar"]) if "avatar" in group else "",
             "follower_ratio": np.nan,
             "active_hours": active_hours,
             "post_rate": 10.0 if active_hours <= 0 else float(len(group) / active_hours),
