@@ -263,9 +263,9 @@ function formatFollowers(value: unknown): string {
 }
 
 const signalDefinitions = [
-  { key: "text", label: "Sinyal teks", color: "var(--primary)" },
-  { key: "temporal", label: "Sinyal waktu", color: "var(--accent-warn)" },
-  { key: "graph", label: "Sinyal relasi", color: "var(--accent-danger)" },
+  { key: "indobertweet", label: "Sinyal teks", color: "var(--primary)" },
+  { key: "temporal_lstm", label: "Sinyal waktu", color: "var(--accent-warn)" },
+  { key: "graphsage", label: "Sinyal relasi", color: "var(--accent-danger)" },
 ];
 
 function signalValues(accounts: BuzzerAccount[]) {

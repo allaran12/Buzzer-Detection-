@@ -11,11 +11,11 @@ const FAQ_ITEMS = [
   },
   {
     q: "Bagaimana NEXANTARA menangani bahasa gaul, singkatan, dan emoji Indonesia?",
-    a: "Pra-pemrosesan teks menggunakan tokenizer yang disesuaikan untuk IndoBERTweet: menormalisasi karakter berulang, mengganti tautan/mention dengan token (@USER, HTTPURL), dan mengubah emoji menjadi deskriptor teks bahasa Indonesia tanpa menghapusnya.",
+    a: "Pra-pemrosesan teks menormalisasi karakter berulang, mengganti tautan dan mention dengan token, serta mengubah emoji menjadi deskriptor teks bahasa Indonesia tanpa menghapusnya.",
   },
   {
     q: "Mengapa sistem membatasi analisis hingga 500 cuitan per tautan?",
-    a: "Batas 500 cuitan teratas dipilih secara optimal untuk menyeimbangkan kecepatan waktu inferensi Graph Neural Network (GraphSAGE) dan ketepatan deteksi kluster interaksi terdekat dari postingan target.",
+    a: "Batas 500 cuitan teratas membantu menyeimbangkan waktu pemrosesan dengan cakupan sinyal interaksi yang relevan dari postingan target.",
   },
   {
     q: "Data apa saja yang dikumpulkan oleh sistem NEXANTARA?",
@@ -23,7 +23,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Apakah NEXANTARA bisa dihubungkan ke model backend Python khusus?",
-    a: "Ya. Cukup atur FASTAPI_BACKEND_URL pada environment variable, dan API akan memproksikan permintaan secara otomatis ke server FastAPI IndoBERTweet/GraphSAGE Anda.",
+    a: "Ya. Atur FASTAPI_BACKEND_URL pada environment variable, lalu API akan memproksikan permintaan secara otomatis ke server FastAPI Anda.",
   },
   {
     q: "Bisakah data dan hasil analisis diekspor?",
